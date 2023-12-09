@@ -1,0 +1,24 @@
+[
+    {
+        "AdType": "Application.Setting",
+        "Name": "cycleserver.installation.initial_user",
+        "Value": "{{cycleserverAdmin}}"
+    },
+    {
+        "AdType": "AuthenticatedUser",
+        "Name": "{{cycleserverAdmin}}",
+        "RawPassword": "{{adminPwd.stdout}}",
+        "Superuser": true
+    },
+    {
+        "AdType": "Credential",
+        "CredentialType": "PublicKey",
+        "Name": "{{cycleserverAdmin}}/public",
+        "PublicKey": "{{cycleserverAdminPubKey}}"
+    },
+    {
+        "AdType": "Application.Setting",
+        "Name": "cycleserver.installation.complete",
+        "Value": true
+    }
+]

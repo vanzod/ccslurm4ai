@@ -1,0 +1,20 @@
+---
+- name: CycleCloud setup
+  hosts: cycleserver
+  become: false
+
+  tasks:
+  - name: Update OS
+    include_role:
+      name: update-rhel
+
+  - name: Configure CycleCloud
+    include_role:
+      name: cyclecloud
+    vars:
+      keyVault: "{{keyVaultName}}"
+      secretName: "{{cycleserverAdmin}}-CycleCloudPwd"
+
+  - name: Configure CycleCloud cluster
+    include_role:
+      name: cyclecloud_cluster

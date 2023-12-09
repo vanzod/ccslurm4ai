@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+
+REMOTE_PORT=$1
+LOCAL_PORT=$2
+
+RESOURCE_GROUP='<RESOURCEGROUP>'
+TARGET_RESOURCE_ID='<VMRESOURCEID>'
+BASTION_NAME=<BASTIONNAME>
+
+az account set --subscription '<SUBNAME>'
+
+az network bastion tunnel --name ${BASTION_NAME} \
+                          --resource-group ${RESOURCE_GROUP} \
+                          --target-resource-id ${TARGET_RESOURCE_ID} \
+                          --resource-port ${REMOTE_PORT} \
+                          --port ${LOCAL_PORT}

@@ -1,0 +1,18 @@
+---
+- name: Copy cluster template file to CycleCloud server
+  template:
+    src: "slurm_template.txt.j2"
+    dest: "/home/{{cycleserverAdmin}}/slurm_template.txt"
+
+- name: Copy template parameters file to CycleCloud server
+  template:
+    src: "slurm_params.json.j2"
+    dest: "/home/{{cycleserverAdmin}}/slurm_params.json"
+
+- name: Import Slurm cluster
+  command: cyclecloud import_cluster slurmCluster -f slurm_template.txt -p slurm_params.json -c Slurm
+  args:
+    chdir: /home/{{cycleserverAdmin}}
+
+- name: Start Slurm cluster
+  command: cyclecloud start_cluster slurmCluster

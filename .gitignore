@@ -1,0 +1,8 @@
+**/*.log
+bastion_ssh_cycleserver.sh
+bastion_tunnel_cycleserver.sh
+*_bicepdeploy-*.json
+*id_rsa*
+ansible/inventory.json
+ansible/group_vars
+miniconda

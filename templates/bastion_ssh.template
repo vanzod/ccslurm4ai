@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+
+RESOURCE_GROUP='<RESOURCEGROUP>'
+USER_NAME='<USERNAME>'
+BASTION_NAME='<BASTIONNAME>'
+TARGET_RESOURCE_ID='<VMRESOURCEID>'
+SSH_KEY_PATH='<SSHKEYPATH>'
+
+az account set --subscription <SUBNAME>
+
+az network bastion ssh --name ${BASTION_NAME} \
+                       --resource-group ${RESOURCE_GROUP} \
+                       --target-resource-id ${TARGET_RESOURCE_ID} \
+                       --auth-type "ssh-key" \
+                       --username ${USER_NAME} \
+                       --ssh-key ${SSH_KEY_PATH}

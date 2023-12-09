@@ -1,0 +1,58 @@
+---
+- name: Check if CycleCloud admin password exists in key vault
+  command: az keyvault secret show --vault-name {{keyVault}} -n {{secretName}}
+  delegate_to: localhost
+  connection: local
+  register: adminPwdExists
+  ignore_errors: true
+
+- name: Generate CycleCloud admin password
+  set_fact:
+    adminPwd: "{{ lookup('community.general.random_string', length=16, base64=True, min_lower=1, min_upper=1, min_special=1, min_numeric=1) }}"
+  delegate_to: localhost
+  connection: local
+  when: adminPwdExists.rc != 0
+
+- name: Create CycleCloud admin password secret in key vault
+  command: az keyvault secret set --vault-name {{keyVault}} -n {{secretName}} --value {{adminPwd}}
+  delegate_to: localhost
+  connection: local
+  when: adminPwdExists.rc != 0
+
+- name: Get CycleCloud admin password from key vault
+  command: az keyvault secret show --vault-name {{keyVault}} -n {{secretName}} --query value -o tsv
+  delegate_to: localhost
+  connection: local
+  register: adminPwd
+
+- name: Configure CycleCloud admin user
+  template:
+    src: cyclecloud_account.json.j2
+    dest: /opt/cycle_server/config/data/cyclecloud_account.json
+    owner: cycle_server
+    group: cycle_server
+    mode: '0640'
+  become: true
+
+- name: Create CycleCloud subscription config file
+  template:
+    src: azure_subscription.json.j2
+    dest: /opt/cycle_server/azure_subscription.json
+    owner: cycle_server
+    group: cycle_server
+    mode: '0644'
+  become: true
+
+- name: Initialize CycleCloud CLI
+  command: cyclecloud initialize --force --loglevel=debug --batch --url=https://localhost --verify-ssl=false --username=cycleadmin --username={{cycleserverAdmin}} --password={{adminPwd.stdout}}
+
+# This is necessary because the cyclecloud account create command
+# will fail if the subscription already exists
+- name: Check if subscription is already configured
+  command: cyclecloud account show {{subscriptionName}}
+  register: accountCheck
+  ignore_errors: true
+
+- name: Configure CycleCloud subscription
+  command: cyclecloud account create -f /opt/cycle_server/azure_subscription.json
+  when: accountCheck.stdout.find("Account not found") != -1
