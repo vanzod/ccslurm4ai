@@ -38,6 +38,18 @@ param kvConfig = {
   allowedUserObjID: readEnvironmentVariable('USER_OBJECTID', '')
 }
 
+param anfConfig = {
+  accountName: 'ccslurmANF'
+  poolName: 'sharedpool'
+  volumeName: 'shared'
+  subnetName: 'anf'
+  CapacityTiB: 4
+  serviceLevel: 'Standard'
+  protocolTypes: [
+    'NFSv4.1'
+  ]
+}
+
 param cyclecloudConfig = {
   vmSize: 'Standard_D4as_v4'
   subnetName: 'infra'

@@ -2,6 +2,7 @@ param region string = resourceGroup().location
 param vnetConfig object
 param kvConfig object
 param cyclecloudConfig object
+param anfConfig object
 
 module clusterNetwork 'modules/network.bicep' = {
   name: 'clusterNetwork'
@@ -37,8 +38,9 @@ module ANF 'modules/anf.bicep' = {
   name: 'ANF'
   params: {
     region: region
-    subnetId: clusterNetwork.outputs.subnetIds.anf
+    subnetIds: clusterNetwork.outputs.subnetIds
     allowedIpRange: vnetConfig.ipRange
+    config: anfConfig
   }
   dependsOn: [
     clusterNetwork

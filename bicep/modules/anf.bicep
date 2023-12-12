@@ -1,36 +1,35 @@
 param region string
-param subnetId string
+param subnetIds object
 param allowedIpRange string
+param config object
 
 resource anfAccount 'Microsoft.NetApp/netAppAccounts@2022-11-01' = {
-  name: 'ANF-ndv5'
+  name: config.accountName
   location: region
   properties: {}
 }
 
 resource sharedPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2022-11-01' = {
-  name: 'sharedpool'
+  name: config.poolName
   location: region
   parent: anfAccount
   properties: {
-    serviceLevel: 'Premium'
-    size: 4 * 1024 * 1024 * 1024 * 1024
+    serviceLevel: config.serviceLevel
+    size: config.CapacityTiB * 1024 * 1024 * 1024 * 1024
   }
 }
 
 resource sharedVolume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2022-11-01' = {
-  name: 'shared'
+  name: config.volumeName
   location: region
   parent: sharedPool
   properties: {
     creationToken: 'shared'
-    serviceLevel: 'Premium'
-    subnetId: subnetId
-    protocolTypes: [
-      'NFSv4.1'
-    ]
+    serviceLevel: config.serviceLevel
+    subnetId: subnetIds[config.subnetName]
+    protocolTypes: config.protocolTypes
     securityStyle: 'unix'
-    usageThreshold: 4 * 1024 * 1024 * 1024 * 1024
+    usageThreshold: config.CapacityTiB * 1024 * 1024 * 1024 * 1024
     exportPolicy: {
       rules: [
         {
