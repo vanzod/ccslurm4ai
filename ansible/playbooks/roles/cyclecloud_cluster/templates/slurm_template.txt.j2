@@ -17,6 +17,8 @@ Autoscale = $Autoscale
     Region = $Region
     KeyPairLocation = ~/.ssh/cyclecloud.pem
     Azure.Identities = $ManagedIdentity
+    CloudInit = '''#cloud-config
+package_update: true'''
 
     # Slurm autoscaling supports both Terminate and Deallocate shutdown policies
     ShutdownPolicy = $configuration_slurm_shutdown_policy
@@ -161,6 +163,8 @@ Autoscale = $Autoscale
         InitialCount = $NumberLoginNodes
         MachineType = $loginMachineType
         ImageName = $SchedulerImageName
+        CloudInit = '''#cloud-config
+package_update: true'''
 
         [[[cluster-init cyclecloud/slurm:login:3.0.1]]]
         [[[configuration]]]
@@ -170,6 +174,8 @@ Autoscale = $Autoscale
 
     [[node nodearraybase]]
     Abstract = true
+    CloudInit = '''#cloud-config
+package_update: true'''
         [[[configuration]]]
         slurm.autoscale = true
 
