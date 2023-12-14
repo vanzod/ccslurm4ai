@@ -29,6 +29,7 @@ resource sharedVolume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@202
     subnetId: subnetIds[config.subnetName]
     protocolTypes: config.protocolTypes
     securityStyle: 'unix'
+    unixPermissions: '0777'
     usageThreshold: config.CapacityTiB * 1024 * 1024 * 1024 * 1024
     exportPolicy: {
       rules: [
