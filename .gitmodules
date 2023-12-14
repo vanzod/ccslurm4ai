@@ -1,0 +1,3 @@
+[submodule "external/azurehpc"]
+	path = external/azurehpc
+	url = https://github.com/Azure/azurehpc.git
