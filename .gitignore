@@ -1,6 +1,6 @@
 **/*.log
-bastion_ssh_cycleserver.sh
-bastion_tunnel_cycleserver.sh
+bastion_ssh_*.sh
+bastion_tunnel_*.sh
 *_bicepdeploy-*.json
 *id_rsa*
 ansible/inventory.json

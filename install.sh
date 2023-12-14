@@ -21,6 +21,28 @@ help()
     echo
 }
 
+create_bastion_scripts()
+{
+    TARGET_NAME=$1
+    BICEP_OUTPUT_FILE=$2
+    VMRESOURCEID=$3
+
+    USER=$(jq -r '.globalVars.value.cycleserverAdmin' ${BICEP_OUTPUT_FILE})
+    BASTIONNAME=$(jq -r '.globalVars.value.bastionName' ${BICEP_OUTPUT_FILE})
+    KEY="${USERNAME}_id_rsa"
+
+    for TEMPLATE_ROOT in bastion_ssh bastion_tunnel; do
+        sed -e "s|<RESOURCEGROUP>|${RESOURCE_GROUP}|g" \
+            -e "s|<USERNAME>|${USER}|g" \
+            -e "s|<SSHKEYPATH>|${KEY}|g" \
+            -e "s|<BASTIONNAME>|${BASTIONNAME}|g" \
+            -e "s|<VMRESOURCEID>|${VMRESOURCEID}|g" \
+            -e "s|<SUBNAME>|${SUBSCRIPTION}|g" \
+            ${TEMPLATES_PATH}/${TEMPLATE_ROOT}.template > ${TEMPLATE_ROOT}_${TARGET_NAME}.sh
+        chmod +x ${TEMPLATE_ROOT}_${TARGET_NAME}.sh
+    done
+}
+
 # Run everything by default
 RUN_BICEP=true
 RUN_ANSIBLE=true
@@ -52,9 +74,10 @@ cmd_exists perl
 ### BICEP ###
 #############
 
+USERNAME=$(grep adminUsername bicep/params.bicepparam | cut -d"'" -f 2)
+KEYFILE="${USERNAME}_id_rsa"
+
 if [ ${RUN_BICEP} == true ]; then
-    USERNAME=$(grep adminUsername bicep/params.bicepparam | cut -d"'" -f 2)
-    KEYFILE="${USERNAME}_id_rsa"
 
     DEPLOYMENT_NAME=bicepdeploy-$(date +%Y%m%d%H%M%S)
     DEPLOYMENT_OUTPUT=${RESOURCE_GROUP}_${DEPLOYMENT_NAME}.json
@@ -82,23 +105,14 @@ if [ ${RUN_BICEP} == true ]; then
                              --name ${DEPLOYMENT_NAME} \
                              --query properties.outputs \
                              > ${DEPLOYMENT_OUTPUT}
-
-    # Generate cycleserver bastion scripts
-    BASTIONNAME=$(jq -r '.globalVars.value.bastionName' ${DEPLOYMENT_OUTPUT})
-    VMRESOURCEID=$(jq -r '.globalVars.value.cycleserverId' ${DEPLOYMENT_OUTPUT})
-
-    for TEMPLATE_ROOT in bastion_ssh bastion_tunnel; do
-        sed -e "s|<RESOURCEGROUP>|${RESOURCE_GROUP}|g" \
-            -e "s|<USERNAME>|${USERNAME}|g" \
-            -e "s|<SSHKEYPATH>|${KEYFILE}|g" \
-            -e "s|<BASTIONNAME>|${BASTIONNAME}|g" \
-            -e "s|<VMRESOURCEID>|${VMRESOURCEID}|g" \
-            -e "s|<SUBNAME>|${SUBSCRIPTION}|g" \
-            ${TEMPLATES_PATH}/${TEMPLATE_ROOT}.template > ${TEMPLATE_ROOT}_cycleserver.sh
-        chmod +x ${TEMPLATE_ROOT}_cycleserver.sh
-    done
-
 fi
+
+# Use the latest available Bicep deployment output
+DEPLOYMENT_OUTPUT=$(ls -t ${RESOURCE_GROUP}_bicepdeploy-*.json | head -1)
+
+# Generate cycleserver bastion scripts
+CC_VM_ID=$(jq -r '.globalVars.value.cycleserverId' ${DEPLOYMENT_OUTPUT})
+create_bastion_scripts 'cycleserver' ${DEPLOYMENT_OUTPUT} ${CC_VM_ID}
 
 ###############
 ### ANSIBLE ###
@@ -107,9 +121,6 @@ fi
 if [ ${RUN_ANSIBLE} == true ]; then
     # Install Ansible in conda environment
     [ -d ./miniconda ] || ./ansible/install/install_ansible.sh
-
-    # Use the latest available Bicep deployment output
-    DEPLOYMENT_OUTPUT=$(ls -t ${RESOURCE_GROUP}_bicepdeploy-*.json | head -1)
 
     # Create inventory file with the appropriate variable to execute through jump host
     ANSIBLE_INVENTORY=${MYDIR}/ansible/inventory.json
@@ -131,4 +142,19 @@ if [ ${RUN_ANSIBLE} == true ]; then
     export ANSIBLE_CONFIG=${MYDIR}/ansible/ansible.cfg
     ansible-playbook -i ${ANSIBLE_INVENTORY} ansible/playbooks/cyclecloud.yml
 
+    for i in {1..10}; do
+        SCHEDULER_VM_ID=$(az resource list -g ${RESOURCE_GROUP} --resource-type 'Microsoft.Compute/virtualMachines' --query "[?tags.Name == 'scheduler'].id" -o tsv)
+
+        # If scheduler VM is not yet created, wait and try again
+        if [ -z "${SCHEDULER_VM_ID}" ]; then
+            echo "Scheduler VM not yet allocated. Retrying bastion scripts generation in 5 seconds..."
+            sleep 5
+            continue
+        else
+            create_bastion_scripts 'scheduler' ${DEPLOYMENT_OUTPUT} ${SCHEDULER_VM_ID}
+            break
+        fi
+    done
 fi
+
+
