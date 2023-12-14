@@ -1,9 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-RESOURCE_GROUP="<RG_NAME>"
-SUBSCRIPTION="<SUB_NAME>"
-REGION="<REGION>"
+RESOURCE_GROUP="dv-ccslurm"
+SUBSCRIPTION="AG_CI_CE_SWHPC_kanchanm"
+REGION="southcentralus"
 
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 TEMPLATES_PATH="${MYDIR}/templates"
@@ -69,6 +69,9 @@ cmd_exists() {
 cmd_exists az
 cmd_exists jq
 cmd_exists perl
+
+# Make sure submodules are also cloned
+git submodule update --init --recursive
 
 #############
 ### BICEP ###
