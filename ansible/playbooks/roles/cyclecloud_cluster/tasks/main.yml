@@ -9,6 +9,30 @@
     src: "slurm_params.json.j2"
     dest: "/home/{{cycleserverAdmin}}/slurm_params.json"
 
+- name: List local CycleCloud projects directories
+  find:
+    paths: "{{role_path}}/files/cc_projects/"
+    file_type: any
+  delegate_to: localhost
+  register: projects_dirs
+
+- name: Upload projects directories to CycleCloud server
+  copy:
+    src: "{{item.path}}"
+    dest: "/home/{{cycleserverAdmin}}/cc_projects"
+    mode: 0755
+  loop: "{{projects_dirs.files}}"
+
+- name: Get CycleCloud locker name
+  shell: cyclecloud locker list | awk '{print $1}'
+  register: lockerName
+
+- name: Import CycleCloud projects
+  command: cyclecloud project upload {{lockerName.stdout}}
+  args:
+    chdir: /home/{{cycleserverAdmin}}/cc_projects/{{item.path | basename}}
+  loop: "{{projects_dirs.files}}"
+
 - name: Import Slurm cluster
   command: cyclecloud import_cluster slurmCluster --force -f slurm_template.txt -p slurm_params.json -c Slurm
   args:
