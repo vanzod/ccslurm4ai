@@ -16,7 +16,7 @@
   delegate_to: localhost
   register: projects_dirs
 
-- name: Upload projects directories to CycleCloud server
+- name: Upload projects to CycleCloud server
   copy:
     src: "{{item.path}}"
     dest: "/home/{{cycleserverAdmin}}/cc_projects"
@@ -27,7 +27,7 @@
   shell: cyclecloud locker list | awk '{print $1}'
   register: lockerName
 
-- name: Import CycleCloud projects
+- name: Upload CycleCloud projects to locker
   command: cyclecloud project upload {{lockerName.stdout}}
   args:
     chdir: /home/{{cycleserverAdmin}}/cc_projects/{{item.path | basename}}
