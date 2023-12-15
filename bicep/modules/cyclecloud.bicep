@@ -106,7 +106,7 @@ resource cycleserver 'Microsoft.Compute/virtualMachines@2022-03-01' = {
       imageReference: {
         publisher: 'azurecyclecloud'
         offer: 'azure-cyclecloud'
-        sku: 'cyclecloud8'
+        sku: 'cyclecloud8-gen2'
         version: config.imageVersion
       }
     }
@@ -137,7 +137,7 @@ resource cycleserver 'Microsoft.Compute/virtualMachines@2022-03-01' = {
     }
   }
   plan: {
-    name: 'cyclecloud8'
+    name: 'cyclecloud8-gen2'
     publisher: 'azurecyclecloud'
     product: 'azure-cyclecloud'
   }

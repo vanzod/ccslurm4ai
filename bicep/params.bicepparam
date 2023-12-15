@@ -53,7 +53,7 @@ param anfConfig = {
 param cyclecloudConfig = {
   vmSize: 'Standard_D4as_v4'
   subnetName: 'infra'
-  imageVersion: '8.4.020230411'
+  imageVersion: '8.5.02023120'
   adminUsername: 'cycleadmin'
   sshPublicKey: loadTextContent('../cycleadmin_id_rsa.pub')
   sshPrivateKey: loadTextContent('../cycleadmin_id_rsa')
