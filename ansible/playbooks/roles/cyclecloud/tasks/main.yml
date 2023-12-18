@@ -60,3 +60,4 @@
 # Fix azcopy permission to allow unprivileged user to run cyclecloud project upload
 - name: Fix azcopy permissions
   command: chmod 755 /usr/local/cyclecloud-cli/embedded/bin/azcopy
+  become: true
