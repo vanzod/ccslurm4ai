@@ -56,3 +56,7 @@
 - name: Configure CycleCloud subscription
   command: cyclecloud account create -f /opt/cycle_server/azure_subscription.json
   when: accountCheck.stdout.find("Account not found") != -1
+
+# Fix azcopy permission to allow unprivileged user to run cyclecloud project upload
+- name: Fix azcopy permissions
+  command: chmod 755 /usr/local/cyclecloud-cli/embedded/bin/azcopy
