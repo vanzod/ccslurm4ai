@@ -1,9 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-RESOURCE_GROUP="<RESOURCE_GROUP>"
-SUBSCRIPTION="<SUBSCRIPTION_NAME>"
-REGION="<REGION>"
+RESOURCE_GROUP="dv-ndv5"
+SUBSCRIPTION="AG_CI_CE_SWHPC_2_kanchanm"
+REGION="southcentralus"
 
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 TEMPLATES_PATH="${MYDIR}/templates"
@@ -94,6 +94,11 @@ if [ ${RUN_BICEP} == true ]; then
 
     # Make sure we are using the correct subscription
     az account set --subscription ${SUBSCRIPTION}
+
+    # Accept Azure Marketplace terms for CycleCloud image
+    az vm image terms accept --publisher azurecyclecloud \
+                             --offer azure-cyclecloud \
+                             --plan cyclecloud8-gen2
 
     # Required to grant access to key vault secrets
     export USER_OBJECTID=$(az ad signed-in-user show --query id --output tsv)
