@@ -1,4 +1,8 @@
 ---
+- name: Get CycleCloud locker name
+  shell: cyclecloud locker list | awk '{print $1}'
+  register: lockerName
+
 - name: Copy cluster template file to CycleCloud server
   template:
     src: "slurm_template.txt.j2"
@@ -22,10 +26,6 @@
     dest: "/home/{{cycleserverAdmin}}/cc_projects"
     mode: 0755
   loop: "{{projects_dirs.files}}"
-
-- name: Get CycleCloud locker name
-  shell: cyclecloud locker list | awk '{print $1}'
-  register: lockerName
 
 - name: Upload CycleCloud projects to locker
   command: cyclecloud project upload {{lockerName.stdout}}

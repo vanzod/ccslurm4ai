@@ -19,21 +19,48 @@
   "configuration_slurm_ha_enabled" : false,
   "configuration_slurm_shutdown_policy" : "Terminate",
   "configuration_slurm_accounting_enabled" : false,
+  "SchedulerClusterInitSpecs" : {
+    "cc_slurm_pyxis_enroot:default:1.0.0" : {
+      "Order" : 10000,
+      "Spec" : "default",
+      "Name" : "cc_slurm_pyxis_enroot:default:1.0.0",
+      "Project" : "cc_slurm_pyxis_enroot",
+      "Locker" : "{{lockerName.stdout}}",
+      "Version" : "1.0.0"
+    }
+  },
   "NumberLoginNodes" : 0,
   "HPCImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2023111801",
-  "HPCMachineType" : "Standard_ND96amsr_A100_v4",
-  "MaxHPCExecuteCoreCount" : 192,
+  "HPCMachineType" : "Standard_F2s_v2",
+  "MaxHPCExecuteCoreCount" : 20,
   "HPCMaxScalesetSize" : 100,
   "HPCMemoryDampen": 8,
-  "HPCClusterInitSpecs" : {},
+  "HPCClusterInitSpecs" : {
+    "cc_slurm_pyxis_enroot:default:1.0.0" : {
+      "Order" : 10000,
+      "Spec" : "default",
+      "Name" : "cc_slurm_pyxis_enroot:default:1.0.0",
+      "Project" : "cc_slurm_pyxis_enroot",
+      "Locker" : "{{lockerName.stdout}}",
+      "Version" : "1.0.0"
+    }
+  },
   "HTCImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2023111801",
   "HTCMachineType" : "Standard_F2s_v2",
   "MaxHTCExecuteCoreCount" : 20,
-  "HTCUseLowPrio": false,
-  "HTCSpotMaxPrice": null,
-  "HTCMemoryDampen": 0,
-  "HTCUsePcpu": false,
-  "HTCClusterInitSpecs" : {},
+  "HTCUseLowPrio" : false,
+  "HTCSpotMaxPrice" : null,
+  "HTCMemoryDampen" : 0,
+  "HTCUsePcpu" : false,
+  "HTCClusterInitSpecs" : {
+      "cc_slurm_pyxis_enroot:default:1.0.0" : {
+      "Order" : 10000,
+      "Spec" : "default",
+      "Name" : "cc_slurm_pyxis_enroot:default:1.0.0",
+      "Project" : "cc_slurm_pyxis_enroot",
+      "Locker" : "{{lockerName.stdout}}",
+      "Version" : "1.0.0"
+    }},
   "NFSAddress" : "{{anfSharedIP}}",
   "NFSType" : "External",
   "NFSSharedExportPath" : "/shared",
