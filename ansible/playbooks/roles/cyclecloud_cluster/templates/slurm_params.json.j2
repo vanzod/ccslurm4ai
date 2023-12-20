@@ -44,6 +44,14 @@
       "Project" : "cc_slurm_pyxis_enroot",
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
+    },
+    "fix_node_as_hostname:default:1.0.0" : {
+      "Order" : 10100,
+      "Spec" : "default",
+      "Name" : "fix_node_as_hostname:default:1.0.0",
+      "Project" : "fix_node_as_hostname",
+      "Locker" : "{{lockerName.stdout}}",
+      "Version" : "1.0.0"
     }
   },
   "HTCImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2023111801",
@@ -61,7 +69,16 @@
       "Project" : "cc_slurm_pyxis_enroot",
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
-    }},
+    },
+    "fix_node_as_hostname:default:1.0.0" : {
+      "Order" : 10100,
+      "Spec" : "default",
+      "Name" : "fix_node_as_hostname:default:1.0.0",
+      "Project" : "fix_node_as_hostname",
+      "Locker" : "{{lockerName.stdout}}",
+      "Version" : "1.0.0"
+    }
+  },
   "NFSAddress" : "{{anfSharedIP}}",
   "NFSType" : "External",
   "NFSSharedExportPath" : "/shared",
