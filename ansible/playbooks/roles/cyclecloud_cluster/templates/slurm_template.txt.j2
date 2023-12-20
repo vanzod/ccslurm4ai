@@ -195,7 +195,11 @@ package_update: true'''
     Azure.MaxScalesetSize = $HPCMaxScalesetSize
     AdditionalClusterInitSpecs = $HPCClusterInitSpecs
     EnableNodeHealthChecks = $EnableNodeHealthChecks
+    Azure.Overprovision = $HPCOverprovision
 
+        [[[volume boot]]]
+        size = 64
+        StorageAccountType = Premium_LRS
 
         [[[configuration]]]
         slurm.default_partition = true
