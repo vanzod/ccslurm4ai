@@ -12,13 +12,13 @@
   "SchedulerImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2023111801",
   "SchedulerHostName" : "Cluster Prefix",
   "SchedulerClusterInitSpecs" : {},
-  "Autoscale" : true,
   "NFSSchedDisable" : false,
   "slurm" : null,
   "configuration_slurm_version" : "23.02.6-1",
   "configuration_slurm_ha_enabled" : false,
   "configuration_slurm_shutdown_policy" : "Terminate",
   "configuration_slurm_accounting_enabled" : false,
+  "additional_slurm_config" : "SuspendTime=-1",
   "SchedulerClusterInitSpecs" : {
     "cc_slurm_pyxis_enroot:default:1.0.0" : {
       "Order" : 10000,
