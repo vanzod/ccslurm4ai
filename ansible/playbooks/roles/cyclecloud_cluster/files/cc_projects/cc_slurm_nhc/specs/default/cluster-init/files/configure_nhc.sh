@@ -14,10 +14,10 @@ NHC_EXE=/usr/sbin/nhc
 NHC_NVIDIA_HEALTHMON=dcgmi
 NHC_NVIDIA_HEALTHMON_ARGS="diag -r 1"
 SLURM_CONF=/sched/slurm.conf
-SLURM_HEALTH_CHECK_INTERVAL=7200
+SLURM_HEALTH_CHECK_INTERVAL=600
 SLURM_HEALTH_CHECK_NODE_STATE=IDLE
 NHC_PROLOG=1
-NHC_EPILOG=0
+NHC_EPILOG=1
 AUTOSCALING=0
 PROLOG_NOHOLD_REQUEUE=0
 PROLOG_RUN_NHC=0
@@ -28,6 +28,9 @@ source $CYCLECLOUD_SPEC_PATH/files/common_functions.sh
 function select_sku_conf() {
    vm_size=`jetpack config azure.metadata.compute.vmSize | tr '[:upper:]' '[:lower:]'`
    case $vm_size in
+         standard_nd96isr_h100_v5)
+           NHC_CONF_FILE_NEW=$CYCLECLOUD_SPEC_PATH/files/nd96isr_h100_v5.conf
+           ;;
         standard_nd96asr_v4)
            NHC_CONF_FILE_NEW=$CYCLECLOUD_SPEC_PATH/files/nd96asr_v4.conf
            ;;
