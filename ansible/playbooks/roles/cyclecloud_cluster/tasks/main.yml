@@ -34,9 +34,9 @@
   loop: "{{projects_dirs.files}}"
 
 - name: Import Slurm cluster
-  command: cyclecloud import_cluster slurmCluster --force -f slurm_template.txt -p slurm_params.json -c Slurm
+  command: cyclecloud import_cluster slurmcluster --force -f slurm_template.txt -p slurm_params.json -c Slurm
   args:
     chdir: /home/{{cycleserverAdmin}}
 
 - name: Start Slurm cluster
-  command: cyclecloud start_cluster slurmCluster
+  command: cyclecloud start_cluster slurmcluster
