@@ -44,7 +44,7 @@
   become: true
 
 - name: Initialize CycleCloud CLI
-  command: cyclecloud initialize --force --loglevel=debug --batch --url=https://localhost --verify-ssl=false --username=cycleadmin --username={{cycleserverAdmin}} --password={{adminPwd.stdout}}
+  command: cyclecloud initialize --force --loglevel=debug --batch --url=https://localhost --verify-ssl=false --username={{cycleserverAdmin}} --password={{adminPwd.stdout}}
 
 # This is necessary because the cyclecloud account create command
 # will fail if the subscription already exists
