@@ -1,12 +1,11 @@
 #!/bin/bash
 
 # Check for NVlink ssues by running NCCL allreduce.
-# Expected performance is > 228 GB/s
 
 NCCL_ARGS_2="-b 1G -f 2 -g 1 -e 2G -c 1"
 
-
 function find_vm() {
+
    vm_size=`/opt/cycle/jetpack/bin/jetpack config azure.metadata.compute.vmSize | tr '[:upper:]' '[:lower:]'`
    dbg "vm_size=$vm_size"
    case $vm_size in
