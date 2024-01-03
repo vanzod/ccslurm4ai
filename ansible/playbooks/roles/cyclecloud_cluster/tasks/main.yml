@@ -1,6 +1,6 @@
 ---
 - name: Get CycleCloud locker name
-  shell: cyclecloud locker list | awk '{print $1}'
+  shell: cyclecloud locker list | egrep -o '^[^(]+' | xargs
   register: lockerName
 
 - name: Copy cluster template file to CycleCloud server
@@ -28,7 +28,7 @@
   loop: "{{projects_dirs.files}}"
 
 - name: Upload CycleCloud projects to locker
-  command: cyclecloud project upload {{lockerName.stdout}}
+  command: cyclecloud project upload '{{lockerName.stdout}}'
   args:
     chdir: /home/{{cycleserverAdmin}}/cc_projects/{{item.path | basename}}
   loop: "{{projects_dirs.files}}"

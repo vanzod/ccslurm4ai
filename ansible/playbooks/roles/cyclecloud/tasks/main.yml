@@ -49,7 +49,7 @@
 # This is necessary because the cyclecloud account create command
 # will fail if the subscription already exists
 - name: Check if subscription is already configured
-  command: cyclecloud account show {{subscriptionName}}
+  command: cyclecloud account show '{{subscriptionName}}'
   register: accountCheck
   ignore_errors: true
 
