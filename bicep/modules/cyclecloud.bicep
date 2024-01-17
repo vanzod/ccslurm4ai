@@ -175,7 +175,7 @@ resource rgContributorAssignment 'Microsoft.Authorization/roleAssignments@2022-0
 }
 
 module subReadAssignment './subrole.bicep' = {
-  name: 'subReadAssignment'
+  name: substring('subReadAssignment_${uniqueString(resourceGroup().id)}', 0, 25)
   scope: subscription()
   params: {
     principalId: cycleserver.identity.principalId
