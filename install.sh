@@ -77,8 +77,9 @@ git submodule update --init --recursive
 ### BICEP ###
 #############
 
-USERNAME=$(grep adminUsername bicep/params.bicepparam | cut -d"'" -f 2)
+USERNAME=$(grep cycleAdminUsername bicep/params.bicepparam | cut -d"'" -f 2)
 KEYFILE="${USERNAME}_id_rsa"
+MYSQL_PWD_FILE="mysql_admin_pwd.txt"
 
 if [ ${RUN_BICEP} == true ]; then
 
@@ -90,6 +91,13 @@ if [ ${RUN_BICEP} == true ]; then
         ssh-keygen -m PEM -t rsa -b 4096 -f ./${KEYFILE} -N ''
         # Remove newline after public key to avoid issues when using it as parameter json files
         perl -pi -e 'chomp if eof' ./${KEYFILE}.pub
+    fi
+
+    # Generate password for MySQL database
+    if [ ! -f ./${MYSQL_PWD_FILE} ]; then
+        echo "Generating new password for MySQL database"
+        openssl rand -base64 16 | tr -d \\n > ./${MYSQL_PWD_FILE}
+        chmod 400 ./${MYSQL_PWD_FILE}
     fi
 
     # Make sure we are using the correct subscription

@@ -17,7 +17,10 @@
   "configuration_slurm_version" : "23.02.6-1",
   "configuration_slurm_ha_enabled" : false,
   "configuration_slurm_shutdown_policy" : "Terminate",
-  "configuration_slurm_accounting_enabled" : false,
+  "configuration_slurm_accounting_enabled" : true,
+  "configuration_slurm_accounting_url" : "{{mySqlFqdn}}",
+  "configuration_slurm_accounting_user" : "{{mySqlUser}}",
+  "configuration_slurm_accounting_password" : "{{mySqlPwd}}",
   "additional_slurm_config" : "SuspendTime=-1",
   "SchedulerClusterInitSpecs" : {
     "cc_slurm_pyxis_enroot:default:1.0.0" : {

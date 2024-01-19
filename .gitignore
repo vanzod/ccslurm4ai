@@ -3,6 +3,7 @@ bastion_ssh_*.sh
 bastion_tunnel_*.sh
 *_bicepdeploy-*.json
 *id_rsa*
+mysql_admin_pwd.txt
 ansible/inventory.json
 ansible/group_vars
 miniconda

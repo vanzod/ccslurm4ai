@@ -122,13 +122,13 @@ resource cycleserver 'Microsoft.Compute/virtualMachines@2022-03-01' = {
     }
     osProfile: {
       computerName: 'cycleserver'
-      adminUsername: config.adminUsername
+      adminUsername: config.cycleAdminUsername
       linuxConfiguration: {
         disablePasswordAuthentication: true
         ssh: {
           publicKeys: [
             {
-              path: '/home/${config.adminUsername}/.ssh/authorized_keys'
+              path: '/home/${config.cycleAdminUsername}/.ssh/authorized_keys'
               keyData: config.sshPublicKey
             }
           ]
@@ -150,7 +150,7 @@ module privateKeyKVStore 'create_kv_secret.bicep' = {
   name: 'privateKeyKVStore'
   params: {
     kvName: kvName
-    secretName: '${config.adminUsername}-SshPrivateKey'
+    secretName: '${config.cycleAdminUsername}-SshPrivateKey'
     secretValue: config.sshPrivateKey
   }
 }
@@ -159,7 +159,7 @@ module publicKeyKVStore 'create_kv_secret.bicep' = {
   name: 'publicKeyKVStore'
   params: {
     kvName: kvName
-    secretName: '${config.adminUsername}-SshPublicKey'
+    secretName: '${config.cycleAdminUsername}-SshPublicKey'
     secretValue: config.sshPublicKey
   }
 }

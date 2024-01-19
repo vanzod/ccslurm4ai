@@ -54,8 +54,14 @@ param cyclecloudConfig = {
   vmSize: 'Standard_D4as_v4'
   subnetName: 'infra'
   imageVersion: '8.5.02023120'
-  adminUsername: 'cycleadmin'
+  cycleAdminUsername: 'cycleadmin'
   sshPublicKey: loadTextContent('../cycleadmin_id_rsa.pub')
   sshPrivateKey: loadTextContent('../cycleadmin_id_rsa')
 }
 
+param MySqlConfig = {
+  sku: 'Standard_D2ads_v5'
+  tier: 'GeneralPurpose'
+  dbAdminUsername: 'cycleadmin'
+  dbAdminPwd: loadTextContent('../mysql_admin_pwd.txt')
+}

@@ -3,6 +3,7 @@ param vnetConfig object
 param kvConfig object
 param cyclecloudConfig object
 param anfConfig object
+param MySqlConfig object
 
 module clusterNetwork 'modules/network.bicep' = {
   name: 'clusterNetwork'
@@ -58,6 +59,22 @@ module bastion 'modules/bastion.bicep' = {
   ]
 }
 
+module MySql 'modules/mysql.bicep' = {
+  name: 'MySql'
+  params: {
+    region: region
+    config: MySqlConfig
+    kvName: KeyVault.outputs.name
+    vnetName: clusterNetwork.outputs.vnetName
+    vnetId: clusterNetwork.outputs.vnetId
+    subnetId: clusterNetwork.outputs.subnetIds.compute
+  }
+  dependsOn: [
+    clusterNetwork
+    KeyVault
+  ]
+}
+
 output globalVars object = {
   anfSharedIP: ANF.outputs.sharedIP
   bastionName: bastion.outputs.name
@@ -74,6 +91,9 @@ output globalVars object = {
   subscriptionName: subscription().displayName
   tenantId: subscription().tenantId
   vnetName: clusterNetwork.outputs.vnetName
+  mySqlFqdn: MySql.outputs.fqdn
+  mySqlUser: MySql.outputs.user
+  mySqlPwd: MySqlConfig.dbAdminPwd
 }
 
 output ansible_inventory object = {
