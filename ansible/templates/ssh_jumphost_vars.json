@@ -1,5 +1,0 @@
-{
-  "vars": {
-  "ansible_ssh_common_args": "-o StrictHostKeyChecking=no -o ProxyCommand='ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i cycleadmin_id_rsa -W %h:%p cycleadmin@127.0.0.1 -p 10022'"
-  }
-}

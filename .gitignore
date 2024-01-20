@@ -6,4 +6,5 @@ bastion_tunnel_*.sh
 mysql_admin_pwd.txt
 ansible/inventory.json
 ansible/group_vars
+ansible/templates/ssh_jumphost_vars.json
 miniconda
