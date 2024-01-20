@@ -69,6 +69,7 @@ cmd_exists() {
 cmd_exists az
 cmd_exists jq
 cmd_exists perl
+cmd_exists rsync
 
 # Make sure submodules are also cloned
 git submodule update --init --recursive
@@ -140,6 +141,7 @@ if [ ${RUN_ANSIBLE} == true ]; then
 
     # Create inventory file with the appropriate variable to execute through jump host
     ANSIBLE_INVENTORY=${MYDIR}/ansible/inventory.json
+    sed "s|ROOT_DIR|${MYDIR}|g" ansible/templates/ssh_jumphost_vars.json.tmpl > ansible/templates/ssh_jumphost_vars.json
     jq -s '.[0].ansible_inventory.value * {"all": .[1]}' ${DEPLOYMENT_OUTPUT} ansible/templates/ssh_jumphost_vars.json > ${ANSIBLE_INVENTORY}
 
     # Create global variables file

@@ -21,11 +21,13 @@
   register: projects_dirs
 
 - name: Upload projects to CycleCloud server
-  copy:
-    src: "{{item.path}}"
-    dest: "/home/{{cycleserverAdmin}}/cc_projects"
-    mode: 0755
-  loop: "{{projects_dirs.files}}"
+  ansible.posix.synchronize:
+    src: "{{role_path}}/files/cc_projects/"
+    dest: "/home/{{cycleserverAdmin}}/cc_projects/"
+    delete: true
+    recursive: true
+    copy_links: true
+    use_ssh_args: true
 
 - name: Upload CycleCloud projects to locker
   command: cyclecloud project upload '{{lockerName.stdout}}'
