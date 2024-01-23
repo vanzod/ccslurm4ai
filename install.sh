@@ -29,7 +29,7 @@ create_bastion_scripts()
 
     USER=$(jq -r '.globalVars.value.cycleserverAdmin' ${BICEP_OUTPUT_FILE})
     BASTIONNAME=$(jq -r '.globalVars.value.bastionName' ${BICEP_OUTPUT_FILE})
-    KEY="${USERNAME}_id_rsa"
+    KEY="${MYDIR}/${USERNAME}_id_rsa"
 
     for TEMPLATE_ROOT in bastion_ssh bastion_tunnel; do
         VMRESOURCEIDS_STR=$(IFS=' '; echo "${VMRESOURCEIDS[*]}")
