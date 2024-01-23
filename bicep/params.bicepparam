@@ -44,7 +44,7 @@ param anfConfig = {
   volumeName: 'shared'
   subnetName: 'anf'
   CapacityTiB: 4
-  serviceLevel: 'Standard'
+  serviceLevel: 'Premium'
   protocolTypes: [
     'NFSv4.1'
   ]
