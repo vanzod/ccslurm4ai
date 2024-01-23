@@ -25,18 +25,19 @@ create_bastion_scripts()
 {
     TARGET_NAME=$1
     BICEP_OUTPUT_FILE=$2
-    VMRESOURCEID=$3
+    VMRESOURCEIDS=("${@:3}")
 
     USER=$(jq -r '.globalVars.value.cycleserverAdmin' ${BICEP_OUTPUT_FILE})
     BASTIONNAME=$(jq -r '.globalVars.value.bastionName' ${BICEP_OUTPUT_FILE})
     KEY="${USERNAME}_id_rsa"
 
     for TEMPLATE_ROOT in bastion_ssh bastion_tunnel; do
+        VMRESOURCEIDS_STR=$(IFS=' '; echo "${VMRESOURCEIDS[*]}")
         sed -e "s|<RESOURCEGROUP>|${RESOURCE_GROUP}|g" \
             -e "s|<USERNAME>|${USER}|g" \
             -e "s|<SSHKEYPATH>|${KEY}|g" \
             -e "s|<BASTIONNAME>|${BASTIONNAME}|g" \
-            -e "s|<VMRESOURCEID>|${VMRESOURCEID}|g" \
+            -e "s|<VMRESOURCEIDS>|${VMRESOURCEIDS_STR}|g" \
             -e "s|<SUBNAME>|${SUBSCRIPTION}|g" \
             ${TEMPLATES_PATH}/${TEMPLATE_ROOT}.template > ${TEMPLATE_ROOT}_${TARGET_NAME}.sh
         chmod +x ${TEMPLATE_ROOT}_${TARGET_NAME}.sh
@@ -160,6 +161,7 @@ if [ ${RUN_ANSIBLE} == true ]; then
     export ANSIBLE_CONFIG=${MYDIR}/ansible/ansible.cfg
     ansible-playbook -i ${ANSIBLE_INVENTORY} ansible/playbooks/cyclecloud.yml
 
+    # Create Bastion connection scripts for scheduler VM
     for i in {1..10}; do
         SCHEDULER_VM_ID=$(az resource list -g ${RESOURCE_GROUP} --resource-type 'Microsoft.Compute/virtualMachines' --query "[?tags.Name == 'scheduler'].id" -o tsv)
 
@@ -173,6 +175,32 @@ if [ ${RUN_ANSIBLE} == true ]; then
             break
         fi
     done
+
+    # Create Bastion connection scripts for login VMs
+    NUMBER_OF_LOGIN_VMS=$(jq -r '.globalVars.value.loginNicsCount' ${DEPLOYMENT_OUTPUT})
+    LOGIN_VM_IDS=()
+
+    for LOGIN_VM_IDX in $(seq 1 ${NUMBER_OF_LOGIN_VMS}); do
+        for i in {1..10}; do
+            LOGIN_VM_ID=$(az resource list -g ${RESOURCE_GROUP} --resource-type 'Microsoft.Compute/virtualMachines' --query "[?tags.Name == 'login${LOGIN_VM_IDX}'].id" -o tsv)
+
+            # If login VM is not yet created, wait and try again
+            if [ -z "${LOGIN_VM_ID}" ]; then
+                echo "Login VM ${LOGIN_VM_IDX} not yet allocated. Retrying bastion scripts generation in 5 seconds..."
+                sleep 5
+                continue
+            else
+                LOGIN_VM_IDS+=(${LOGIN_VM_ID})
+                break
+            fi
+        done
+    done
+
+    # Create scripts only if all VM resource IDs have been collected
+    if [ ${#LOGIN_VM_IDS[@]} -eq ${NUMBER_OF_LOGIN_VMS} ]; then
+        create_bastion_scripts 'login' ${DEPLOYMENT_OUTPUT} "${LOGIN_VM_IDS[@]}"
+    else
+        echo "Could not retreive all login VMs resource ID"
+        exit 1
+    fi
 fi
-
-

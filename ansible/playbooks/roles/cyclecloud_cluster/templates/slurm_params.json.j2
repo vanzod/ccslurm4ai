@@ -64,7 +64,27 @@
       "Version" : "1.0.0"
     }
   },
-  "NumberLoginNodes" : 0,
+  "NumberLoginNodes" : 3,
+  "loginMachineType" : "Standard_D8s_v4",
+  "loginImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2023111801",
+  "LoginClusterInitSpecs": {
+    "cc_slurm_pyxis_enroot:default:1.0.0" : {
+      "Order" : 10000,
+      "Spec" : "default",
+      "Name" : "cc_slurm_pyxis_enroot:default:1.0.0",
+      "Project" : "cc_slurm_pyxis_enroot",
+      "Locker" : "{{lockerName.stdout}}",
+      "Version" : "1.0.0"
+    },
+    "fix_node_as_hostname:default:1.0.0" : {
+      "Order" : 10100,
+      "Spec" : "default",
+      "Name" : "fix_node_as_hostname:default:1.0.0",
+      "Project" : "fix_node_as_hostname",
+      "Locker" : "{{lockerName.stdout}}",
+      "Version" : "1.0.0"
+    }
+  },
   "HPCImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2023111801",
   "HPCMachineType" : "Standard_ND96isr_H100_v5",
   "MaxHPCExecuteCoreCount" : 192,

@@ -160,18 +160,47 @@ package_update: true'''
         slurm.use_nodename_as_hostname = $NodeNameIsHostname
         slurm.is_primary_scheduler = false
 
-    [[nodearray login]]
-        InitialCount = $NumberLoginNodes
+    [[node login1]]
         MachineType = $loginMachineType
-        ImageName = $SchedulerImageName
-        CloudInit = '''#cloud-config
-package_update: true'''
+        ImageName = $loginImageName
+        AdditionalClusterInitSpecs = $LoginClusterInitSpecs
 
         [[[cluster-init cyclecloud/slurm:login:3.0.5]]]
         [[[configuration]]]
         autoscale.enabled = false
         slurm.node_prefix = ${ifThenElse(NodeNamePrefix=="Cluster Prefix", StrJoin("-", ClusterName, ""), NodeNamePrefix)}
         slurm.use_nodename_as_hostname = $NodeNameIsHostname
+
+        [[[network-interface eth0]]]
+        NetworkInterfaceId = {{loginNicsId[0]}}
+
+    [[node login2]]
+        MachineType = $loginMachineType
+        ImageName = $loginImageName
+        AdditionalClusterInitSpecs = $LoginClusterInitSpecs
+
+        [[[cluster-init cyclecloud/slurm:login:3.0.5]]]
+        [[[configuration]]]
+        autoscale.enabled = false
+        slurm.node_prefix = ${ifThenElse(NodeNamePrefix=="Cluster Prefix", StrJoin("-", ClusterName, ""), NodeNamePrefix)}
+        slurm.use_nodename_as_hostname = $NodeNameIsHostname
+
+        [[[network-interface eth0]]]
+        NetworkInterfaceId = {{loginNicsId[1]}}
+
+    [[node login3]]
+        MachineType = $loginMachineType
+        ImageName = $loginImageName
+        AdditionalClusterInitSpecs = $LoginClusterInitSpecs
+
+        [[[cluster-init cyclecloud/slurm:login:3.0.5]]]
+        [[[configuration]]]
+        autoscale.enabled = false
+        slurm.node_prefix = ${ifThenElse(NodeNamePrefix=="Cluster Prefix", StrJoin("-", ClusterName, ""), NodeNamePrefix)}
+        slurm.use_nodename_as_hostname = $NodeNameIsHostname
+
+        [[[network-interface eth0]]]
+        NetworkInterfaceId = {{loginNicsId[2]}}
 
     [[node nodearraybase]]
     Abstract = true

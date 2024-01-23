@@ -3,15 +3,27 @@ set -euo pipefail
 
 REMOTE_PORT=$1
 LOCAL_PORT=$2
+TARGET_IDX=${3:-1}
 
 RESOURCE_GROUP='<RESOURCEGROUP>'
-TARGET_RESOURCE_ID='<VMRESOURCEID>'
+TARGET_RESOURCE_IDS=(<VMRESOURCEIDS>)
 BASTION_NAME=<BASTIONNAME>
+
+if [ ${TARGET_IDX} -gt ${#TARGET_RESOURCE_IDS[@]} ]; then
+    echo "Target index ${TARGET_IDX} is out of range. Valid range: 1-${#TARGET_RESOURCE_IDS[@]}"
+    exit 1
+elif [ ${TARGET_IDX} -le 0 ]; then
+    echo "Invalid target index. Valid range: 1-${#TARGET_RESOURCE_IDS[@]}"
+    exit 1
+else
+    IDX=$((${TARGET_IDX} - 1))
+    TARGET_ID=${TARGET_RESOURCE_IDS[${IDX}]}
+fi
 
 az account set --subscription '<SUBNAME>'
 
 az network bastion tunnel --name ${BASTION_NAME} \
                           --resource-group ${RESOURCE_GROUP} \
-                          --target-resource-id ${TARGET_RESOURCE_ID} \
+                          --target-resource-id ${TARGET_ID} \
                           --resource-port ${REMOTE_PORT} \
                           --port ${LOCAL_PORT}

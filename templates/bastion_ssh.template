@@ -1,17 +1,30 @@
 #!/bin/bash
 set -euo pipefail
 
+TARGET_IDX=${1:-1}
+
 RESOURCE_GROUP='<RESOURCEGROUP>'
 USER_NAME='<USERNAME>'
 BASTION_NAME='<BASTIONNAME>'
-TARGET_RESOURCE_ID='<VMRESOURCEID>'
+TARGET_RESOURCE_IDS=(<VMRESOURCEIDS>)
 SSH_KEY_PATH='<SSHKEYPATH>'
+
+if [ ${TARGET_IDX} -gt ${#TARGET_RESOURCE_IDS[@]} ]; then
+    echo "Target index ${TARGET_IDX} is out of range. Valid range: 1-${#TARGET_RESOURCE_IDS[@]}"
+    exit 1
+elif [ ${TARGET_IDX} -le 0 ]; then
+    echo "Invalid target index. Valid range: 1-${#TARGET_RESOURCE_IDS[@]}"
+    exit 1
+else
+    IDX=$((${TARGET_IDX} - 1))
+    TARGET_ID=${TARGET_RESOURCE_IDS[${IDX}]}
+fi
 
 az account set --subscription <SUBNAME>
 
 az network bastion ssh --name ${BASTION_NAME} \
                        --resource-group ${RESOURCE_GROUP} \
-                       --target-resource-id ${TARGET_RESOURCE_ID} \
+                       --target-resource-id ${TARGET_ID} \
                        --auth-type "ssh-key" \
                        --username ${USER_NAME} \
                        --ssh-key ${SSH_KEY_PATH}

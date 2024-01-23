@@ -59,6 +59,18 @@ module bastion 'modules/bastion.bicep' = {
   ]
 }
 
+module loginNIC 'modules/login_nic.bicep' = {
+  name: 'loginNIC'
+  params: {
+    region: region
+    subnetId: clusterNetwork.outputs.subnetIds.compute
+    numberOfInstances: 3
+  }
+  dependsOn: [
+    clusterNetwork
+  ]
+}
+
 module MySql 'modules/mysql.bicep' = {
   name: 'MySql'
   params: {
@@ -94,6 +106,9 @@ output globalVars object = {
   mySqlFqdn: MySql.outputs.fqdn
   mySqlUser: MySql.outputs.user
   mySqlPwd: MySqlConfig.dbAdminPwd
+  loginNicsCount: loginNIC.outputs.count
+  loginNicsId: loginNIC.outputs.ids
+  loginNicsPublicIP: loginNIC.outputs.public_ips
 }
 
 output ansible_inventory object = {
