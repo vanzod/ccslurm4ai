@@ -1,7 +1,7 @@
 using './main.bicep'
 
 param vnetConfig = {
-  name: 'ndv5testVnet'
+  name: 'clusterVnet'
   ipRange: '10.64.0.0/14'
   subnets: [
     {
