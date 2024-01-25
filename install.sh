@@ -1,9 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-RESOURCE_GROUP="<RG_NAME>"
-SUBSCRIPTION="<SUB_NAME>"
-REGION="<REGION>"
+RESOURCE_GROUP="dv-ccslurm4ai"
+SUBSCRIPTION="AG_CI_CE_SWHPC_2_kanchanm"
+REGION="southcentralus"
 
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 TEMPLATES_PATH="${MYDIR}/templates"
