@@ -4,6 +4,7 @@ param kvConfig object
 param cyclecloudConfig object
 param anfConfig object
 param MySqlConfig object
+param roleDefinitionIds object
 
 module clusterNetwork 'modules/network.bicep' = {
   name: 'clusterNetwork'
