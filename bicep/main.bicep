@@ -88,6 +88,14 @@ module MySql 'modules/mysql.bicep' = {
   ]
 }
 
+module PrometheusGrafana 'modules/prometheus_grafana.bicep' = {
+  name: 'PromeheusGrafana'
+  params: {
+    region: region
+    roleDefinitionIds: roleDefinitionIds
+  }
+}
+
 output globalVars object = {
   anfSharedIP: ANF.outputs.sharedIP
   bastionName: bastion.outputs.name
