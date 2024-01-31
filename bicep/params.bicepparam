@@ -65,3 +65,8 @@ param MySqlConfig = {
   dbAdminUsername: 'cycleadmin'
   dbAdminPwd: loadTextContent('../mysql_admin_pwd.txt')
 }
+
+param roleDefinitionIds = {
+  MonitoringMetricsPublisher: '3913510d-42f4-4e42-8a64-420c390055eb'
+  MonitoringDataReader: 'b0d8363b-8ddd-447d-831f-62ca05bff136'
+}

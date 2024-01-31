@@ -113,19 +113,6 @@ if [ ${RUN_BICEP} == true ]; then
     # Required to grant access to key vault secrets
     export USER_OBJECTID=$(az ad signed-in-user show --query id --output tsv)
 
-    # Purge existing roleDefinitionIds variable from bicepparam file
-    sed -i '/param roleDefinitionIds = {/,/}/d' bicep/params.bicepparam
-
-    # Get list of role definition IDs and add them to bicepparam file
-    az role definition list --query "[].{roleName:roleName, id:id}" --output json > role_definitions.json
-    printf 'param roleDefinitionIds = {\n' > roledefs.tmp
-    jq -r '.[] | "  \(.roleName | gsub("[ -/.()]"; "")): '\''\(.id)'\''"' role_definitions.json >> roledefs.tmp
-    printf '}\n' >> roledefs.tmp
-    cat roledefs.tmp >> bicep/params.bicepparam
-    rm -f roledefs.tmp role_definitions.json
-
-    exit 0
-
     # Create resource group and start deployment
     az group create --location ${REGION} --name ${RESOURCE_GROUP}
     az deployment group create --resource-group ${RESOURCE_GROUP} \
