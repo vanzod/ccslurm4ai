@@ -63,7 +63,7 @@ The Azure infrastructure is deployed using Bicep while the configuration of all 
    ./install.sh
    ```
 
-   If ran without options, the install script will first perform the infrastructure deployment through Bicep and then the configurations via Ansible. It also provides the option of running a single step by using the `-a` flag for Ansible or `-b` for Bicep. This is useful for applying changes to the template aftr the initial deployment.
+   If ran without options, the install script will first perform the infrastructure deployment through Bicep and then the configurations via Ansible. It also provides the option of running a single step by using the `-a` flag for Ansible or `-b` for Bicep. This is useful for applying changes to the template after the initial deployment.
 
 ## Connection
 
@@ -166,7 +166,7 @@ When the Slurm cluster is first started, all nodes are set in FUTURE state:
 
 ![Infrastructure diagram](images/slurm_sinfo_1.png)
 
-To start one or more nodes, use the follwing command:
+To start one or more nodes, use the following command:
 
 ```bash
 sudo /opt/azurehpc/slurm/resume_program.sh slurmcluster-hpc-[1-2]
