@@ -7,6 +7,7 @@
   - [Using Bastion](#using-bastion)
   - [Using public IPs](#using-public-ips)
 - [Nodes management](#nodes-management)
+- [Users management](#users-management)
 - [Cluster customization](#cluster-customization)
   - [Login nodes](#login-nodes)
   - [CycleCloud cluster template and projects](#cyclecloud-cluster-template-and-projects)
@@ -181,6 +182,12 @@ sudo /opt/azurehpc/slurm/suspend_program.sh slurmcluster-hpc-[1-2]
 ```
 
 To prevent affecting running jobs it is important to ensure that no jobs are running on nodes that are being terminated by draining nodes first.
+
+## Users management
+
+The cluster users management is provided through CycleCloud built-in authentication system. Detailed documentation can be found [here](https://learn.microsoft.com/en-us/azure/cyclecloud/concepts/user-management).
+
+Once the user and its SSH public key are added to CycleCloud, edit the `bastion_ssh_login.sh` and `bastion_tunnel_login.sh` scripts (or the equivalent ones for the scheduler if login nodes are not desired) with the appropriate username and private SSH key file path. The new user can now use those scripts to access the cluster through Bastion.
 
 ## Cluster customization
 
