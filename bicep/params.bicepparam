@@ -51,7 +51,7 @@ param anfConfig = {
 }
 
 param cyclecloudConfig = {
-  vmSize: 'Standard_D4as_v4'
+  vmSize: 'Standard_D4s_v4'
   subnetName: 'infra'
   imageVersion: '8.5.02023120'
   cycleAdminUsername: 'cycleadmin'
