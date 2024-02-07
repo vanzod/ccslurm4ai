@@ -52,7 +52,7 @@ module publicKeyKVStore 'create_kv_secret.bicep' = {
 }
 
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-06-01' = {
-  name: 'MySqlPE'
+  name: '${dbName}-PE'
   location: region
   properties: {
     privateLinkServiceConnections: [
