@@ -28,8 +28,7 @@ The Azure infrastructure is deployed using Bicep while the configuration of all 
 - Your Azure account must have "Owner" role on the target subscription and resource group.
 - When using the default configuration, the target subscription must have the follwing minimum compute quota (see [here](https://learn.microsoft.com/en-us/azure/networking/check-usage-against-limits#azure-portal) on how to check):
   - Standard NDSH100v5: 192 vCPUs
-  - Standard Dsv4: 32 vCPUs
-  - Standard Dasv4: 4 vCPUs
+  - Standard Dsv4: 36 vCPUs
 - Additional software:
   - *jq* JSON processor
   - *perl* interpreter
