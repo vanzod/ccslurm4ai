@@ -163,7 +163,7 @@ if [ ${RUN_ANSIBLE} == true ]; then
     ansible-playbook -i ${ANSIBLE_INVENTORY} ansible/playbooks/cyclecloud.yml
 
     # Create Bastion connection scripts for scheduler VM
-    for i in {1..10}; do
+    for i in {1..20}; do
         SCHEDULER_VM_ID=$(az resource list -g ${RESOURCE_GROUP} --resource-type 'Microsoft.Compute/virtualMachines' --query "[?tags.Name == 'scheduler'].id" -o tsv)
 
         # If scheduler VM is not yet created, wait and try again
@@ -182,7 +182,7 @@ if [ ${RUN_ANSIBLE} == true ]; then
     LOGIN_VM_IDS=()
 
     for LOGIN_VM_IDX in $(seq 1 ${NUMBER_OF_LOGIN_VMS}); do
-        for i in {1..10}; do
+        for i in {1..20}; do
             LOGIN_VM_ID=$(az resource list -g ${RESOURCE_GROUP} --resource-type 'Microsoft.Compute/virtualMachines' --query "[?tags.Name == 'login${LOGIN_VM_IDX}'].id" -o tsv)
 
             # If login VM is not yet created, wait and try again
