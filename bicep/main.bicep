@@ -118,6 +118,7 @@ output globalVars object = {
   loginNicsCount: loginNIC.outputs.count
   loginNicsId: loginNIC.outputs.ids
   loginNicsPublicIP: loginNIC.outputs.public_ips
+  prometheusManagedIdentityResourceId: PrometheusGrafana.outputs.managedIdentityResourceId
 }
 
 output ansible_inventory object = {

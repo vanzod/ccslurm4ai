@@ -55,5 +55,5 @@ resource role_managedIdentityWorkspacePublisher 'Microsoft.Authorization/roleAss
   scope: azureMonitorWorkspace
 }
 
-output managedIdentityObjectId string = managedIdentity.id
+output managedIdentityResourceId string = managedIdentity.id
 output managedIdentityClientId string = managedIdentity.properties.clientId
