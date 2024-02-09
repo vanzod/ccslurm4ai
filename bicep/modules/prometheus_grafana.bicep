@@ -1,4 +1,5 @@
 param region string
+param principalObjId string
 param roleDefinitionIds object
 
 resource azureMonitorWorkspace 'Microsoft.Monitor/accounts@2023-04-03' = {
@@ -53,6 +54,14 @@ resource role_managedIdentityWorkspacePublisher 'Microsoft.Authorization/roleAss
     principalId: managedIdentity.properties.principalId
   }
   scope: azureMonitorWorkspace
+}
+
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(resourceGroup().id, principalObjId)
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionIds.GrafanaAdmin)
+    principalId: principalObjId
+  }
 }
 
 output managedIdentityResourceId string = managedIdentity.id

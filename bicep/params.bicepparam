@@ -1,5 +1,7 @@
 using './main.bicep'
 
+param deployingUserObjId = readEnvironmentVariable('USER_OBJECTID', '')
+
 param vnetConfig = {
   name: 'clusterVnet'
   ipRange: '10.64.0.0/14'
@@ -34,10 +36,6 @@ param vnetConfig = {
   ]
 }
 
-param kvConfig = {
-  allowedUserObjID: readEnvironmentVariable('USER_OBJECTID', '')
-}
-
 param anfConfig = {
   accountName: 'ccslurmANF'
   poolName: 'sharedpool'
@@ -67,6 +65,7 @@ param MySqlConfig = {
 }
 
 param roleDefinitionIds = {
+  GrafanaAdmin: '22926164-76b3-42b3-bc55-97df8dab3e41'
   MonitoringMetricsPublisher: '3913510d-42f4-4e42-8a64-420c390055eb'
   MonitoringDataReader: 'b0d8363b-8ddd-447d-831f-62ca05bff136'
 }

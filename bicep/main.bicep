@@ -1,10 +1,10 @@
 param region string = resourceGroup().location
 param vnetConfig object
-param kvConfig object
 param cyclecloudConfig object
 param anfConfig object
 param MySqlConfig object
 param roleDefinitionIds object
+param deployingUserObjId string
 
 module clusterNetwork 'modules/network.bicep' = {
   name: 'clusterNetwork'
@@ -18,7 +18,7 @@ module KeyVault 'modules/keyvault.bicep' = {
   name: 'KeyVault'
   params: {
     region: region
-    config: kvConfig
+    allowedUserObjID: deployingUserObjId
   }
 }
 
@@ -93,6 +93,7 @@ module PrometheusGrafana 'modules/prometheus_grafana.bicep' = {
   params: {
     region: region
     roleDefinitionIds: roleDefinitionIds
+    principalObjId: deployingUserObjId
   }
 }
 

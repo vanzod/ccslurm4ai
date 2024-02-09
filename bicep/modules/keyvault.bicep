@@ -1,5 +1,5 @@
 param region string
-param config object
+param allowedUserObjID string
 
 var kvName = substring('keyVault${uniqueString(resourceGroup().id)}', 0, 16)
 
@@ -14,7 +14,7 @@ resource kv 'Microsoft.KeyVault/vaults@2023-02-01' = {
     accessPolicies: [
       {
         tenantId: subscription().tenantId
-        objectId: config.allowedUserObjID
+        objectId: allowedUserObjID
         permissions: {
           secrets: [
             'get'
