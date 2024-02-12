@@ -61,10 +61,10 @@ param prometheusConfig = {
   vmSize: 'Standard_D4s_v4'
   subnetName: 'infra'
   vmImage: {
-    publisher: 'Canonical'
-    offer: '0001-com-ubuntu-server-jammy'
-    sku: '22_04-lts'
-    version: '22.04.202402080'
+    publisher: 'almalinux'
+    offer: 'almalinux-x86_64'
+    sku: '8_7-gen2'
+    version: '8.7.2023072701'
   }
   adminUsername: 'cycleadmin'
   sshPublicKey: loadTextContent('../cycleadmin_id_rsa.pub')
