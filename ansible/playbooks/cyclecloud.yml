@@ -6,7 +6,7 @@
   tasks:
   - name: Update OS
     include_role:
-      name: update-rhel
+      name: "update-{{ ansible_os_family | lower }}"
 
   - name: Configure CycleCloud
     include_role:

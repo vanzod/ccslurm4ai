@@ -1,0 +1,14 @@
+---
+- name: Update OS packages
+  apt:
+    upgrade: 'yes'
+  register: apt_updates
+  become: true
+
+- name: Reboot if OS kernel updates were installed
+  reboot:
+    reboot_timeout: 600
+    connect_timeout: 15
+    msg: "Reboot initiated by Ansible for OS updates"
+  when: dict((apt_updates.changes|default(dict())).updated|default([])).kernel is defined
+  become: true
