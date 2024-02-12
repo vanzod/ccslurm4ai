@@ -1,6 +1,8 @@
 param region string
+param config object
 param principalObjId string
 param roleDefinitionIds object
+param subnetIds object
 
 resource azureMonitorWorkspace 'Microsoft.Monitor/accounts@2023-04-03' = {
   name: 'managedPrometheus'
@@ -64,5 +66,80 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
+resource prometheusNSG 'Microsoft.Network/networkSecurityGroups@2023-09-01' = {
+  name: 'prometheusNSG'
+  location: region
+}
+
+resource prometheusNIC 'Microsoft.Network/networkInterfaces@2023-09-01' = {
+  name: 'prometheusNIC'
+  location: region
+  properties: {
+    ipConfigurations: [
+      {
+        name: 'ipconfig1'
+        properties: {
+          privateIPAllocationMethod: 'Dynamic'
+          subnet: {
+            id: subnetIds[config.subnetName]
+          }
+        }
+      }
+    ]
+    networkSecurityGroup: {
+      id: prometheusNSG.id
+    }
+  }
+}
+
+resource prometheus 'Microsoft.Compute/virtualMachines@2022-03-01' = {
+  name: 'prometheus'
+  location: region
+  properties: {
+    hardwareProfile: {
+      vmSize: 'Standard_D4s_v4'
+    }
+    storageProfile: {
+      osDisk: {
+        name: 'prometheusOSDisk'
+        createOption: 'fromImage'
+        managedDisk: {
+          storageAccountType: 'StandardSSD_LRS'
+        }
+        deleteOption: 'Delete'
+      }
+      imageReference: config.vmImage
+    }
+    networkProfile: {
+      networkInterfaces: [
+        {
+          id: prometheusNIC.id
+          properties: {
+            deleteOption: 'Delete'
+          }
+        }
+      ]
+    }
+    osProfile: {
+      computerName: 'prometheus'
+      adminUsername: config.adminUsername
+      linuxConfiguration: {
+        disablePasswordAuthentication: true
+        ssh: {
+          publicKeys: [
+            {
+              path: '/home/${config.adminUsername}/.ssh/authorized_keys'
+              keyData: config.sshPublicKey
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+
 output managedIdentityResourceId string = managedIdentity.id
 output managedIdentityClientId string = managedIdentity.properties.clientId
+output prometheusVmId string = prometheus.id
+output prometheusVmIp string = prometheusNIC.properties.ipConfigurations[0].properties.privateIPAddress
+output prometheusVmAdmin string = prometheus.properties.osProfile.adminUsername

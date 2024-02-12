@@ -1,6 +1,7 @@
 param region string = resourceGroup().location
 param vnetConfig object
 param cyclecloudConfig object
+param prometheusConfig object
 param anfConfig object
 param MySqlConfig object
 param roleDefinitionIds object
@@ -92,8 +93,10 @@ module PrometheusGrafana 'modules/prometheus_grafana.bicep' = {
   name: 'PromeheusGrafana'
   params: {
     region: region
+    config: prometheusConfig
     roleDefinitionIds: roleDefinitionIds
     principalObjId: deployingUserObjId
+    subnetIds: clusterNetwork.outputs.subnetIds
   }
 }
 
@@ -119,6 +122,7 @@ output globalVars object = {
   loginNicsCount: loginNIC.outputs.count
   loginNicsId: loginNIC.outputs.ids
   loginNicsPublicIP: loginNIC.outputs.public_ips
+  prometheusVmId: PrometheusGrafana.outputs.prometheusVmId
   prometheusManagedIdentityResourceId: PrometheusGrafana.outputs.managedIdentityResourceId
 }
 
@@ -128,6 +132,10 @@ output ansible_inventory object = {
       cycleserver: {
         ansible_host: CycleCloud.outputs.privateIp
         ansible_user: CycleCloud.outputs.adminUser
+      }
+      prometheus: {
+        ansible_host: PrometheusGrafana.outputs.prometheusVmIp
+        ansible_user: PrometheusGrafana.outputs.prometheusVmAdmin
       }
     }
   }

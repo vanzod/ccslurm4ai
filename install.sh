@@ -129,9 +129,12 @@ fi
 # Use the latest available Bicep deployment output
 DEPLOYMENT_OUTPUT=$(ls -t ${RESOURCE_GROUP}_bicepdeploy-*.json | head -1)
 
-# Generate cycleserver bastion scripts
-CC_VM_ID=$(jq -r '.globalVars.value.cycleserverId' ${DEPLOYMENT_OUTPUT})
-create_bastion_scripts 'cycleserver' ${DEPLOYMENT_OUTPUT} ${CC_VM_ID}
+# Generate bastion scripts for cycleserver and promehteus VMs
+VM_ID=$(jq -r '.globalVars.value.cycleserverId' ${DEPLOYMENT_OUTPUT})
+create_bastion_scripts 'cycleserver' ${DEPLOYMENT_OUTPUT} ${VM_ID}
+
+VM_ID=$(jq -r '.globalVars.value.prometheusVmId' ${DEPLOYMENT_OUTPUT})
+create_bastion_scripts 'prometheus' ${DEPLOYMENT_OUTPUT} ${VM_ID}
 
 ###############
 ### ANSIBLE ###

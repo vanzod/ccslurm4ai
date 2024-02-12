@@ -57,6 +57,20 @@ param cyclecloudConfig = {
   sshPrivateKey: loadTextContent('../cycleadmin_id_rsa')
 }
 
+param prometheusConfig = {
+  vmSize: 'Standard_D4s_v4'
+  subnetName: 'infra'
+  vmImage: {
+    publisher: 'Canonical'
+    offer: '0001-com-ubuntu-server-jammy'
+    sku: '22_04-lts'
+    version: '22.04.202402080'
+  }
+  adminUsername: 'cycleadmin'
+  sshPublicKey: loadTextContent('../cycleadmin_id_rsa.pub')
+  sshPrivateKey: loadTextContent('../cycleadmin_id_rsa')
+}
+
 param MySqlConfig = {
   sku: 'Standard_D2ads_v5'
   tier: 'GeneralPurpose'
