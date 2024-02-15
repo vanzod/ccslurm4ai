@@ -89,8 +89,8 @@ module MySql 'modules/mysql.bicep' = {
   ]
 }
 
-module PrometheusGrafana 'modules/prometheus_grafana.bicep' = {
-  name: 'PromeheusGrafana'
+module telemetryInfra 'modules/telemetry.bicep' = {
+  name: 'telemetryInfra'
   params: {
     region: region
     config: prometheusConfig
@@ -122,8 +122,8 @@ output globalVars object = {
   loginNicsCount: loginNIC.outputs.count
   loginNicsId: loginNIC.outputs.ids
   loginNicsPublicIP: loginNIC.outputs.public_ips
-  prometheusVmId: PrometheusGrafana.outputs.prometheusVmId
-  prometheusManagedIdentityResourceId: PrometheusGrafana.outputs.managedIdentityResourceId
+  prometheusVmId: telemetryInfra.outputs.prometheusVmId
+  monitorMetricsIngestionEndpoint: telemetryInfra.outputs.monitorMetricsIngestionEndpoint
 }
 
 output ansible_inventory object = {
@@ -134,10 +134,10 @@ output ansible_inventory object = {
         ansible_user: CycleCloud.outputs.adminUser
       }
       prometheus: {
-        ansible_host: PrometheusGrafana.outputs.prometheusVmIp
-        ansible_user: PrometheusGrafana.outputs.prometheusVmAdmin
+        ansible_host: telemetryInfra.outputs.prometheusVmIp
+        ansible_user: telemetryInfra.outputs.prometheusVmAdmin
       }
     }
   }
-
 }
+
