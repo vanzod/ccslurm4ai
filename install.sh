@@ -123,6 +123,15 @@ if [ ${RUN_BICEP} == true ]; then
     az deployment sub show --name ${DEPLOYMENT_NAME} \
                            --query properties.outputs \
                            > ${DEPLOYMENT_OUTPUT}
+
+    # Assign Metrics Publisher role to Prometheus VM identity
+    # Cannot be done in previous bicep deployment as explained here:
+    # https://github.com/Azure/bicep/discussions/13352
+    VM_PRINCIPAL_ID=$(jq -r '.globalVars.value.prometheusVmPrincipalId' ${DEPLOYMENT_OUTPUT})
+    ROLE_SCOPE=$(jq -r '.globalVars.value.dataCollectionRuleId' ${DEPLOYMENT_OUTPUT})
+    az role assignment create --role 'Monitoring Metrics Publisher' \
+                              --assignee ${VM_PRINCIPAL_ID} \
+                              --scope ${ROLE_SCOPE}
 fi
 
 # Use the latest available Bicep deployment output

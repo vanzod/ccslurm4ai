@@ -79,5 +79,6 @@ resource prometheus 'Microsoft.Compute/virtualMachines@2022-03-01' = {
 }
 
 output id string = prometheus.id
+output principalId string = prometheus.identity.principalId
 output privateIp string = prometheusNIC.properties.ipConfigurations[0].properties.privateIPAddress
 output adminUsername string = prometheus.properties.osProfile.adminUsername

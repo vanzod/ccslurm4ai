@@ -43,7 +43,9 @@ module prometheusScraper 'prometheus_scraper.bicep' = {
   }
 }
 
+output dataCollectionRuleId string = workspaceGrafana.outputs.dataCollectionRuleResourceId
 output monitorMetricsIngestionEndpoint string = generateIngestionEndpointUrl.outputs.metricsIngestionEndpoint
 output prometheusVmId string = prometheusScraper.outputs.id
+output prometheusVmPrincipalId string = prometheusScraper.outputs.principalId
 output prometheusVmIp string = prometheusScraper.outputs.privateIp
 output prometheusVmAdmin string = prometheusScraper.outputs.adminUsername

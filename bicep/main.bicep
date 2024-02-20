@@ -143,6 +143,8 @@ output globalVars object = {
   loginNicsId: loginNIC.outputs.ids
   loginNicsPublicIP: loginNIC.outputs.public_ips
   prometheusVmId: telemetryInfra.outputs.prometheusVmId
+  prometheusVmPrincipalId: telemetryInfra.outputs.prometheusVmPrincipalId
+  dataCollectionRuleId: telemetryInfra.outputs.dataCollectionRuleId
   monitorMetricsIngestionEndpoint: telemetryInfra.outputs.monitorMetricsIngestionEndpoint
 }
 
