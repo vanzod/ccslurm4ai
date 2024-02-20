@@ -26,3 +26,17 @@
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
   become: true
+
+- name: Check if Prometheus container successfully started
+  shell: "docker logs prometheus 2>&1 | grep 'Done replaying WAL'"
+  register: log_output
+  until: "'Done replaying WAL' in log_output.stdout"
+  retries: 12
+  delay: 5
+  changed_when: false
+  become: true
+
+- name: Fail if 'Done replaying WAL' not found in log
+  fail:
+    msg: "Container did not start successfully"
+  when: "'Done replaying WAL' not in log_output.stdout"
