@@ -1,4 +1,7 @@
-param region string = resourceGroup().location
+targetScope = 'subscription'
+
+param region string
+param rgName string
 param vnetConfig object
 param cyclecloudConfig object
 param prometheusConfig object
@@ -7,8 +10,14 @@ param MySqlConfig object
 param roleDefinitionIds object
 param deployingUserObjId string
 
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
+  name: rgName
+  location: region
+}
+
 module clusterNetwork 'modules/network.bicep' = {
   name: 'clusterNetwork'
+  scope: resourceGroup
   params: {
     region: region
     config: vnetConfig
@@ -17,6 +26,7 @@ module clusterNetwork 'modules/network.bicep' = {
 
 module KeyVault 'modules/keyvault.bicep' = {
   name: 'KeyVault'
+  scope: resourceGroup
   params: {
     region: region
     allowedUserObjID: deployingUserObjId
@@ -25,6 +35,7 @@ module KeyVault 'modules/keyvault.bicep' = {
 
 module CycleCloud 'modules/cyclecloud.bicep' = {
   name: 'CycleCloud'
+  scope: resourceGroup
   params: {
     region: region
     config: cyclecloudConfig
@@ -39,6 +50,7 @@ module CycleCloud 'modules/cyclecloud.bicep' = {
 
 module ANF 'modules/anf.bicep' = {
   name: 'ANF'
+  scope: resourceGroup
   params: {
     region: region
     subnetIds: clusterNetwork.outputs.subnetIds
@@ -52,6 +64,7 @@ module ANF 'modules/anf.bicep' = {
 
 module bastion 'modules/bastion.bicep' = {
   name: 'bastion'
+  scope: resourceGroup
   params: {
     region: region
     subnetId: clusterNetwork.outputs.subnetIds.AzureBastionSubnet
@@ -63,6 +76,7 @@ module bastion 'modules/bastion.bicep' = {
 
 module loginNIC 'modules/login_nic.bicep' = {
   name: 'loginNIC'
+  scope: resourceGroup
   params: {
     region: region
     subnetId: clusterNetwork.outputs.subnetIds.compute
@@ -75,6 +89,7 @@ module loginNIC 'modules/login_nic.bicep' = {
 
 module MySql 'modules/mysql.bicep' = {
   name: 'MySql'
+  scope: resourceGroup
   params: {
     region: region
     config: MySqlConfig
@@ -93,11 +108,16 @@ module telemetryInfra 'modules/telemetry.bicep' = {
   name: 'telemetryInfra'
   params: {
     region: region
+    rgName: rgName
     config: prometheusConfig
     roleDefinitionIds: roleDefinitionIds
     principalObjId: deployingUserObjId
     subnetIds: clusterNetwork.outputs.subnetIds
   }
+  dependsOn: [
+    resourceGroup
+    clusterNetwork
+  ]
 }
 
 output globalVars object = {
@@ -111,7 +131,7 @@ output globalVars object = {
   keyVaultName: KeyVault.outputs.name
   lockerAccountName: CycleCloud.outputs.lockerSAName
   region: region
-  resourceGroup: resourceGroup().name
+  resourceGroup: resourceGroup.name
   subscriptionId: subscription().subscriptionId
   subscriptionName: subscription().displayName
   tenantId: subscription().tenantId

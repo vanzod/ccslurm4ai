@@ -11,6 +11,7 @@ resource prometheusNIC 'Microsoft.Network/networkInterfaces@2023-09-01' = {
   name: 'prometheusNIC'
   location: region
   properties: {
+    enableAcceleratedNetworking: true
     ipConfigurations: [
       {
         name: 'ipconfig1'
@@ -31,6 +32,9 @@ resource prometheusNIC 'Microsoft.Network/networkInterfaces@2023-09-01' = {
 resource prometheus 'Microsoft.Compute/virtualMachines@2022-03-01' = {
   name: 'prometheus'
   location: region
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     hardwareProfile: {
       vmSize: 'Standard_D4s_v4'
@@ -73,20 +77,6 @@ resource prometheus 'Microsoft.Compute/virtualMachines@2022-03-01' = {
     }
   }
 }
-
-//var dcrName = split(dataCollectionRuleResourceId, '/')[8]
-//var dcrRg = split(dataCollectionRuleResourceId, '/')[4]
-
-//module metricsPublisherAssignment 'assign_role.bicep' = {
-//  name: 'metricsPublisherAssignment'
-//  scope: subscription()
-//  params: {
-//    principalId: prometheus.identity.principalId
-//    roleDefinitionId : roleDefinitionIds.MonitoringMetricsPublisher
-//    resourceGroupName: dcrRg
-//    resourceName: dcrName
-//  }
-//}
 
 output id string = prometheus.id
 output privateIp string = prometheusNIC.properties.ipConfigurations[0].properties.privateIPAddress

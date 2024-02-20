@@ -1,9 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-RESOURCE_GROUP="<RG_NAME>"
-SUBSCRIPTION="<SUBSCRIPTION_NAME>"
-REGION="<REGION_NAME>"
+export RESOURCE_GROUP="dv-cc4aiEUS"
+export SUBSCRIPTION="AG_CI_CE_SWHPC_2_kanchanm"
+export REGION="eastus"
 
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 TEMPLATES_PATH="${MYDIR}/templates"
@@ -113,17 +113,16 @@ if [ ${RUN_BICEP} == true ]; then
     # Required to grant access to key vault secrets
     export USER_OBJECTID=$(az ad signed-in-user show --query id --output tsv)
 
-    # Create resource group and start deployment
-    az group create --location ${REGION} --name ${RESOURCE_GROUP}
-    az deployment group create --resource-group ${RESOURCE_GROUP} \
-        	                   --template-file bicep/main.bicep \
-                               --parameters bicep/params.bicepparam \
-                               --name ${DEPLOYMENT_NAME}
+    # Start deployment
+    az deployment sub create --template-file bicep/main.bicep \
+                             --parameters bicep/params.bicepparam \
+                             --location ${REGION} \
+                             --name ${DEPLOYMENT_NAME}
 
-    az deployment group show --resource-group ${RESOURCE_GROUP} \
-                             --name ${DEPLOYMENT_NAME} \
-                             --query properties.outputs \
-                             > ${DEPLOYMENT_OUTPUT}
+    # Collect deployment output
+    az deployment sub show --name ${DEPLOYMENT_NAME} \
+                           --query properties.outputs \
+                           > ${DEPLOYMENT_OUTPUT}
 fi
 
 # Use the latest available Bicep deployment output
@@ -163,7 +162,8 @@ if [ ${RUN_ANSIBLE} == true ]; then
 
     # Run Ansible playbooks
     export ANSIBLE_CONFIG=${MYDIR}/ansible/ansible.cfg
-    ansible-playbook -i ${ANSIBLE_INVENTORY} ansible/playbooks/cyclecloud.yml
+#    ansible-playbook -i ${ANSIBLE_INVENTORY} ansible/playbooks/cyclecloud.yml
+    ansible-playbook -i ${ANSIBLE_INVENTORY} ansible/playbooks/prometheus.yml
 
     # Create Bastion connection scripts for scheduler VM
     for i in {1..20}; do

@@ -1,5 +1,7 @@
 using './main.bicep'
 
+param region = readEnvironmentVariable('REGION', '')
+param rgName = readEnvironmentVariable('RESOURCE_GROUP', '')
 param deployingUserObjId = readEnvironmentVariable('USER_OBJECTID', '')
 
 param vnetConfig = {
