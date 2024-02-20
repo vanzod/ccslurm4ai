@@ -1,0 +1,20 @@
+global:
+  scrape_interval: 1s
+  evaluation_interval: 1s
+
+remote_write:
+  - url: "{{ monitorMetricsIngestionEndpoint }}"
+    azuread:
+      cloud: AzurePublic
+      managed_identity:
+        client_id: "{{ prometheusMetricsPubAppId }}"
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      # This is running in this container, so localhost works
+      - targets: ["localhost:9090"]
+  - job_name: "prometheus-vm"
+    static_configs:
+      # This is running on host, so we need to reference the host via docker magic and add 'extra_hosts' arg to docker when standing-up
+      - targets: ["host.docker.internal:9100"]

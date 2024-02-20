@@ -1,0 +1,28 @@
+---
+- name: Create Prometheus config directory
+  file:
+    path: "{{ prometheus_data_dir }}/etc"
+    state: directory
+    mode: 0755
+  become: true
+
+- name: Create Prometheus configuration file
+  template:
+    src: prometheus.yml.j2
+    dest: "{{ prometheus_data_dir }}/etc/prometheus.yml"
+  become: true
+
+- name: Run Prometheus Docker container
+  docker_container:
+    name: prometheus
+    image: "prom/prometheus:v{{ prometheus_version }}"
+    state: started
+    restart: true
+    restart_policy: always
+    ports:
+      - "{{ prometheus_port }}:{{ prometheus_port }}"
+    volumes:
+      - "{{ prometheus_data_dir }}/etc:/etc/prometheus"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+  become: true

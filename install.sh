@@ -1,9 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-export RESOURCE_GROUP="dv-cc4aiEUS"
-export SUBSCRIPTION="AG_CI_CE_SWHPC_2_kanchanm"
-export REGION="eastus"
+RESOURCE_GROUP="<RG_NAME>"
+SUBSCRIPTION="<SUBSCRIPTION_NAME>"
+REGION="<REGION_NAME>"
 
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 TEMPLATES_PATH="${MYDIR}/templates"
@@ -127,11 +127,17 @@ if [ ${RUN_BICEP} == true ]; then
     # Assign Metrics Publisher role to Prometheus VM identity
     # Cannot be done in previous bicep deployment as explained here:
     # https://github.com/Azure/bicep/discussions/13352
+    ROLE_ASSIGNMENT_OUTPUT_FILE=metrics_publisher_assignment.json
     VM_PRINCIPAL_ID=$(jq -r '.globalVars.value.prometheusVmPrincipalId' ${DEPLOYMENT_OUTPUT})
     ROLE_SCOPE=$(jq -r '.globalVars.value.dataCollectionRuleId' ${DEPLOYMENT_OUTPUT})
     az role assignment create --role 'Monitoring Metrics Publisher' \
                               --assignee ${VM_PRINCIPAL_ID} \
-                              --scope ${ROLE_SCOPE}
+                              --scope ${ROLE_SCOPE} > ${ROLE_ASSIGNMENT_OUTPUT_FILE}
+
+    # Add the system managed identity application ID to the deployment output file
+    APP_ID=$(jq -r '.principalName' ${ROLE_ASSIGNMENT_OUTPUT_FILE})
+    jq --arg appId "${APP_ID}" '.globalVars.value.prometheusMetricsPubAppId = $appId' ${DEPLOYMENT_OUTPUT} > temp.json && mv temp.json ${DEPLOYMENT_OUTPUT}
+    rm -f ${ROLE_ASSIGNMENT_OUTPUT_FILE}
 fi
 
 # Use the latest available Bicep deployment output
