@@ -50,7 +50,6 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-output workspace resource 'Microsoft.Monitor/accounts@2023-04-03' = azureMonitorWorkspace
 output dataCollectionEndpointResourceId string = azureMonitorWorkspace.properties.defaultIngestionSettings.dataCollectionEndpointResourceId
 output dataCollectionRuleResourceId string = azureMonitorWorkspace.properties.defaultIngestionSettings.dataCollectionRuleResourceId
 output prometheusQueryEndpoint string = azureMonitorWorkspace.properties.metrics.prometheusQueryEndpoint
