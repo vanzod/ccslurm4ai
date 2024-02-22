@@ -178,7 +178,7 @@ if [ ${RUN_ANSIBLE} == true ]; then
     # Run Ansible playbooks
     export ANSIBLE_CONFIG=${MYDIR}/ansible/ansible.cfg
     ansible-playbook -i ${ANSIBLE_INVENTORY} ansible/playbooks/cyclecloud.yml
-    sleep 15  # Necessary for SSH control persist to expire
+    sleep 15  # Necessary for SSH control persist to expire (see ansible.cfg)
     ansible-playbook -i ${ANSIBLE_INVENTORY} ansible/playbooks/prometheus.yml
 
     # Create Bastion connection scripts for scheduler VM
