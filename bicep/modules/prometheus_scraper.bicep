@@ -78,6 +78,15 @@ resource prometheus 'Microsoft.Compute/virtualMachines@2022-03-01' = {
   }
 }
 
+module subReadAssignment './subrole.bicep' = {
+  name: substring('subReadAssignment_${uniqueString(resourceGroup().id)}', 0, 25)
+  scope: subscription()
+  params: {
+    principalId: prometheus.identity.principalId
+    roleType: 'reader'
+  }
+}
+
 output id string = prometheus.id
 output principalId string = prometheus.identity.principalId
 output privateIp string = prometheusNIC.properties.ipConfigurations[0].properties.privateIPAddress
