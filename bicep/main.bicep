@@ -146,6 +146,7 @@ output globalVars object = {
   prometheusVmPrincipalId: telemetryInfra.outputs.prometheusVmPrincipalId
   dataCollectionRuleId: telemetryInfra.outputs.dataCollectionRuleId
   monitorMetricsIngestionEndpoint: telemetryInfra.outputs.monitorMetricsIngestionEndpoint
+  managedGrafanaName: telemetryInfra.outputs.grafanaName
 }
 
 output ansible_inventory object = {
