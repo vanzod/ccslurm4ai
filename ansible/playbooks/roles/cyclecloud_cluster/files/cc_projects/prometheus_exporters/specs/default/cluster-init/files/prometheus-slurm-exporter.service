@@ -2,7 +2,7 @@
 Description=Prometheus SLURM Exporter
 
 [Service]
-ExecStart=/usr/bin/prometheus-slurm-exporter -gpus-acct
+ExecStart=/opt/prometheus-slurm-exporter/bin/prometheus-slurm-exporter -gpus-acct
 Restart=always
 RestartSec=15
 

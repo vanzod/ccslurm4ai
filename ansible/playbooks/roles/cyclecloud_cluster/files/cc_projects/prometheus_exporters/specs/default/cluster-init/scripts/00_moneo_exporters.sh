@@ -3,7 +3,7 @@ set -euo pipefail
 
 MONEO_VERSION='v0.3.4'
 
-source $CYCLECLOUD_SPEC_PATH/scripts/common_functions.sh
+source $CYCLECLOUD_SPEC_PATH/files/common_functions.sh
 
 # Install Moneo exporters only on compute nodes
 if is_compute_node; then
