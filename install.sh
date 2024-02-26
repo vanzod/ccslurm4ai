@@ -124,8 +124,6 @@ if [ ${RUN_BICEP} == true ]; then
     cat roledefs.tmp >> bicep/params.bicepparam
     rm -f roledefs.tmp role_definitions.json
 
-    exit 0
-
     # Create resource group and start deployment
     az group create --location ${REGION} --name ${RESOURCE_GROUP}
     az deployment group create --resource-group ${RESOURCE_GROUP} \
