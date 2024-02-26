@@ -54,3 +54,4 @@ output dataCollectionEndpointResourceId string = azureMonitorWorkspace.propertie
 output dataCollectionRuleResourceId string = azureMonitorWorkspace.properties.defaultIngestionSettings.dataCollectionRuleResourceId
 output prometheusQueryEndpoint string = azureMonitorWorkspace.properties.metrics.prometheusQueryEndpoint
 output grafanaName string = grafana.name
+output monitorWorkspaceId string = azureMonitorWorkspace.id

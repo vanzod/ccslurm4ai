@@ -50,3 +50,4 @@ output prometheusVmPrincipalId string = prometheusScraper.outputs.principalId
 output prometheusVmIp string = prometheusScraper.outputs.privateIp
 output prometheusVmAdmin string = prometheusScraper.outputs.adminUsername
 output grafanaName string = workspaceGrafana.outputs.grafanaName
+output monitorWorkspaceId string = workspaceGrafana.outputs.monitorWorkspaceId

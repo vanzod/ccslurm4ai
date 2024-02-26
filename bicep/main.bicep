@@ -120,6 +120,18 @@ module telemetryInfra 'modules/telemetry.bicep' = {
   ]
 }
 
+module moneoMetrics 'modules/moneo_metric_rules.bicep' = {
+  name: 'moneoMetrics'
+  scope: resourceGroup
+  params: {
+    region: region
+    monitorWorkspaceId: telemetryInfra.outputs.monitorWorkspaceId
+  }
+  dependsOn: [
+    telemetryInfra
+  ]
+}
+
 output globalVars object = {
   anfSharedIP: ANF.outputs.sharedIP
   bastionName: bastion.outputs.name
