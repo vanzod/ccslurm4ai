@@ -1,0 +1,70 @@
+global:
+  scrape_interval: 1s
+  evaluation_interval: 1s
+
+remote_write:
+  - url: "{{ monitorMetricsIngestionEndpoint }}"
+    azuread:
+      cloud: AzurePublic
+      managed_identity:
+        client_id: "{{ prometheusMetricsPubAppId }}"
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      # This is running in this container, so localhost works
+      - targets: ["localhost:9090"]
+  - job_name: "prometheus-vm"
+    static_configs:
+      # This is running on host, so we need to reference the host via docker magic and add 'extra_hosts' arg to docker when standing-up
+      - targets: ["host.docker.internal:9100"]
+  - job_name: "cluster-hpc_nvidia_exporter"
+    azure_sd_configs:
+    - environment: AzurePublicCloud
+      authentication_method: ManagedIdentity
+      subscription_id: "{{ subscriptionId }}"
+      resource_group: "{{ resourceGroup }}"
+      refresh_interval: 1m
+      port: 8000
+    relabel_configs:
+      - source_labels: [__meta_azure_machine_tag_PrometheusTarget]
+        regex: hpc
+        action: keep
+  - job_name: "cluster-hpc_net_exporter"
+    azure_sd_configs:
+    - environment: AzurePublicCloud
+      authentication_method: ManagedIdentity
+      subscription_id: "{{ subscriptionId }}"
+      resource_group: "{{ resourceGroup }}"
+      refresh_interval: 1m
+      port: 8001
+    relabel_configs:
+      - source_labels: [__meta_azure_machine_tag_PrometheusTarget]
+        regex: hpc
+        action: keep
+  - job_name: "cluster-hpc_node_exporter"
+    azure_sd_configs:
+    - environment: AzurePublicCloud
+      authentication_method: ManagedIdentity
+      subscription_id: "{{ subscriptionId }}"
+      resource_group: "{{ resourceGroup }}"
+      refresh_interval: 1m
+      port: 8002
+    relabel_configs:
+      - source_labels: [__meta_azure_machine_tag_PrometheusTarget]
+        regex: hpc
+        action: keep
+  - job_name: "slurm-scheduler"
+    scrape_interval: 30s
+    scrape_timeout: 30s
+    azure_sd_configs:
+    - environment: AzurePublicCloud
+      authentication_method: ManagedIdentity
+      subscription_id: "{{ subscriptionId }}"
+      resource_group: "{{ resourceGroup }}"
+      refresh_interval: 1m
+      port: 8080
+    relabel_configs:
+      - source_labels: [__meta_azure_machine_tag_PrometheusTarget]
+        regex: scheduler
+        action: keep

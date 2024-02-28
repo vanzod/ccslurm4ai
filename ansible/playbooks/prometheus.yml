@@ -14,11 +14,15 @@
 
   - name: Start Prometheus container
     include_role:
-      name: prometheus
+      name: prometheus_docker
     vars:
       prometheus_version: "2.45.3"
       prometheus_port: "9090"
       prometheus_data_dir: "/opt/prometheus"
+
+  - name: Start node exporter on Prometheus VM
+    include_role:
+      name: node_exporter
 
   - name: Customize Grafana
     include_role:
