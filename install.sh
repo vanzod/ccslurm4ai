@@ -113,36 +113,43 @@ if [ ${RUN_BICEP} == true ]; then
     # Required to grant access to key vault secrets
     export USER_OBJECTID=$(az ad signed-in-user show --query id --output tsv)
 
-    # Purge existing roleDefinitionIds variable from bicepparam file
-    sed -i '/param roleDefinitionIds = {/,/}/d' bicep/params.bicepparam
+    # Start deployment
+    az deployment sub create --template-file bicep/main.bicep \
+                             --parameters bicep/params.bicepparam \
+                             --location ${REGION} \
+                             --name ${DEPLOYMENT_NAME}
 
-    # Get list of role definition IDs and add them to bicepparam file
-    az role definition list --query "[].{roleName:roleName, id:id}" --output json > role_definitions.json
-    printf 'param roleDefinitionIds = {\n' > roledefs.tmp
-    jq -r '.[] | "  \(.roleName | gsub("[ -/.()]"; "")): '\''\(.id)'\''"' role_definitions.json >> roledefs.tmp
-    printf '}\n' >> roledefs.tmp
-    cat roledefs.tmp >> bicep/params.bicepparam
-    rm -f roledefs.tmp role_definitions.json
+    # Collect deployment output
+    az deployment sub show --name ${DEPLOYMENT_NAME} \
+                           --query properties.outputs \
+                           > ${DEPLOYMENT_OUTPUT}
 
-    # Create resource group and start deployment
-    az group create --location ${REGION} --name ${RESOURCE_GROUP}
-    az deployment group create --resource-group ${RESOURCE_GROUP} \
-        	                   --template-file bicep/main.bicep \
-                               --parameters bicep/params.bicepparam \
-                               --name ${DEPLOYMENT_NAME}
+    # Assign Metrics Publisher role to Prometheus VM identity
+    # Cannot be done in previous bicep deployment as explained here:
+    # https://github.com/Azure/bicep/discussions/13352
+    ROLE_ASSIGNMENT_OUTPUT_FILE=metrics_publisher_assignment.json
+    VM_PRINCIPAL_ID=$(jq -r '.globalVars.value.prometheusVmPrincipalId' ${DEPLOYMENT_OUTPUT})
+    ROLE_SCOPE=$(jq -r '.globalVars.value.dataCollectionRuleId' ${DEPLOYMENT_OUTPUT})
+    az role assignment create --role 'Monitoring Metrics Publisher' \
+                              --assignee ${VM_PRINCIPAL_ID} \
+                              --scope ${ROLE_SCOPE} > ${ROLE_ASSIGNMENT_OUTPUT_FILE}
 
-    az deployment group show --resource-group ${RESOURCE_GROUP} \
-                             --name ${DEPLOYMENT_NAME} \
-                             --query properties.outputs \
-                             > ${DEPLOYMENT_OUTPUT}
+    # Add the system managed identity application ID to the deployment output file
+    APP_ID=$(jq -r '.principalName' ${ROLE_ASSIGNMENT_OUTPUT_FILE})
+    jq --arg appId "${APP_ID}" '.globalVars.value.prometheusMetricsPubAppId = $appId' ${DEPLOYMENT_OUTPUT} > temp.json && mv temp.json ${DEPLOYMENT_OUTPUT}
+    rm -f ${ROLE_ASSIGNMENT_OUTPUT_FILE}
+
 fi
 
 # Use the latest available Bicep deployment output
 DEPLOYMENT_OUTPUT=$(ls -t ${RESOURCE_GROUP}_bicepdeploy-*.json | head -1)
 
-# Generate cycleserver bastion scripts
-CC_VM_ID=$(jq -r '.globalVars.value.cycleserverId' ${DEPLOYMENT_OUTPUT})
-create_bastion_scripts 'cycleserver' ${DEPLOYMENT_OUTPUT} ${CC_VM_ID}
+# Generate bastion scripts for cycleserver and promehteus VMs
+VM_ID=$(jq -r '.globalVars.value.cycleserverId' ${DEPLOYMENT_OUTPUT})
+create_bastion_scripts 'cycleserver' ${DEPLOYMENT_OUTPUT} ${VM_ID}
+
+VM_ID=$(jq -r '.globalVars.value.prometheusVmId' ${DEPLOYMENT_OUTPUT})
+create_bastion_scripts 'prometheus' ${DEPLOYMENT_OUTPUT} ${VM_ID}
 
 ###############
 ### ANSIBLE ###
@@ -172,9 +179,11 @@ if [ ${RUN_ANSIBLE} == true ]; then
     # Run Ansible playbooks
     export ANSIBLE_CONFIG=${MYDIR}/ansible/ansible.cfg
     ansible-playbook -i ${ANSIBLE_INVENTORY} ansible/playbooks/cyclecloud.yml
+    sleep 15  # Necessary for SSH control persist to expire (see ansible.cfg)
+    ansible-playbook -i ${ANSIBLE_INVENTORY} ansible/playbooks/prometheus.yml
 
     # Create Bastion connection scripts for scheduler VM
-    for i in {1..10}; do
+    for i in {1..20}; do
         SCHEDULER_VM_ID=$(az resource list -g ${RESOURCE_GROUP} --resource-type 'Microsoft.Compute/virtualMachines' --query "[?tags.Name == 'scheduler'].id" -o tsv)
 
         # If scheduler VM is not yet created, wait and try again
@@ -193,7 +202,7 @@ if [ ${RUN_ANSIBLE} == true ]; then
     LOGIN_VM_IDS=()
 
     for LOGIN_VM_IDX in $(seq 1 ${NUMBER_OF_LOGIN_VMS}); do
-        for i in {1..10}; do
+        for i in {1..20}; do
             LOGIN_VM_ID=$(az resource list -g ${RESOURCE_GROUP} --resource-type 'Microsoft.Compute/virtualMachines' --query "[?tags.Name == 'login${LOGIN_VM_IDX}'].id" -o tsv)
 
             # If login VM is not yet created, wait and try again

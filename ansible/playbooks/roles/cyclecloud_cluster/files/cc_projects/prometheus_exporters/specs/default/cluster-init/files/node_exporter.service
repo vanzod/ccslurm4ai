@@ -1,0 +1,13 @@
+[Unit]
+Description=Node Exporter
+Requires=node_exporter.socket
+
+[Service]
+User=node_exporter
+EnvironmentFile=/etc/sysconfig/node_exporter
+ExecStart=/opt/node_exporter-1.7.0.linux-amd64/node_exporter --web.systemd-socket $OPTIONS
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=multi-user.target

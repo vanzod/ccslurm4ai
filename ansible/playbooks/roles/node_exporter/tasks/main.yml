@@ -1,0 +1,59 @@
+- name: Extract node exporter archive
+  unarchive:
+    src: node_exporter-1.7.0.linux-amd64.tar.gz
+    dest: /opt/
+  become: true
+
+- name: Install node exporter service
+  copy:
+    src: node_exporter.service
+    dest: /etc/systemd/system/
+  become: true
+
+- name: Create node_exporter group
+  group:
+    name: node_exporter
+    system: true
+  become: true
+
+- name: Create node_exporter user
+  user:
+    name: node_exporter
+    group: node_exporter
+    system: true
+    shell: /sbin/nologin
+  become: true
+
+- name: Install node exporter socket
+  copy:
+    src: node_exporter.socket
+    dest: /etc/systemd/system/
+  become: true
+
+- name: Create /etc/sysconfig directory
+  file:
+    path: /etc/sysconfig
+    state: directory
+  become: true
+
+- name: Copy node exporter configuration file
+  copy:
+    src: sysconfig.node_exporter
+    dest: /etc/sysconfig/node_exporter
+  become: true
+
+- name: Create textfile_collector directory
+  file:
+    path: /var/lib/node_exporter/textfile_collector
+    state: directory
+    owner: node_exporter
+    group: node_exporter
+  become: true
+
+- name: Enable and start node exporter service
+  systemd:
+    name: node_exporter
+    daemon_reload: true
+    enabled: true
+    state: started
+  become: true

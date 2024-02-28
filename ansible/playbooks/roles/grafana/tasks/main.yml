@@ -1,0 +1,33 @@
+---
+- name: List existing Managed Grafana dashboards folders
+  command: az grafana folder list --name {{managedGrafanaName}} --resource-group {{resourceGroup}} --query '[].uid' --output tsv
+  register: existing_dashboards
+  delegate_to: localhost
+
+- name: Delete all Managed Grafana dashboards folders
+  command: az grafana folder delete --name {{managedGrafanaName}} --resource-group {{resourceGroup}} --folder {{item}}
+  loop: "{{existing_dashboards.stdout_lines}}"
+  delegate_to: localhost
+
+- name: List all local Grafana dashboard template files
+  find:
+    paths: "{{role_path}}/files/dashboards/"
+    file_type: file
+    recurse: yes
+  delegate_to: localhost
+  register: dashboard_templates
+
+- name: List local Grafana dashboards folders
+  set_fact:
+    dashboard_folders: "{{dashboard_templates.files | map(attribute='path') | map('dirname') | unique | map('basename') | list}}"
+  delegate_to: localhost
+
+- name: Create Grafana dashboards folders
+  command: az grafana folder create --name {{managedGrafanaName}} --resource-group {{resourceGroup}} --title '{{item}}'
+  loop: "{{dashboard_folders}}"
+  delegate_to: localhost
+
+- name: Import Grafana dashboard templates
+  command: az grafana dashboard import --name {{managedGrafanaName}} --resource-group {{resourceGroup}} --folder '{{item.path | dirname | basename}}' --definition {{item.path}}
+  loop: "{{dashboard_templates.files}}"
+  delegate_to: localhost

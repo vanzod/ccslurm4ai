@@ -70,6 +70,14 @@
       "Project" : "fix_accounting_storage_host",
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
+    },
+    "prometheus_exporters:default:1.0.0" : {
+      "Order" : 10600,
+      "Spec" : "default",
+      "Name" : "prometheus_exporters:default:1.0.0",
+      "Project" : "prometheus_exporters",
+      "Locker" : "{{lockerName.stdout}}",
+      "Version" : "1.0.0"
     }
   },
   "NumberLoginNodes" : 3,
@@ -91,6 +99,14 @@
       "Project" : "fix_node_as_hostname",
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
+    },
+    "prometheus_exporters:default:1.0.0" : {
+      "Order" : 10200,
+      "Spec" : "default",
+      "Name" : "prometheus_exporters:default:1.0.0",
+      "Project" : "prometheus_exporters",
+      "Locker" : "{{lockerName.stdout}}",
+      "Version" : "1.0.0"
     }
   },
   "HPCImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2023111801",
@@ -98,7 +114,7 @@
   "MaxHPCExecuteCoreCount" : 192,
   "HPCMaxScalesetSize" : 100,
   "HPCOverprovision" : false,
-  "HPCMemoryDampen": 0,
+  "HPCMemoryDampen" : 0,
   "HPCClusterInitSpecs" : {
     "cc_slurm_pyxis_enroot:default:1.0.0" : {
       "Order" : 10000,
@@ -137,6 +153,14 @@
       "Spec" : "default",
       "Name" : "cc_slurm_nhc:default:1.0.0",
       "Project" : "cc_slurm_nhc",
+      "Locker" : "{{lockerName.stdout}}",
+      "Version" : "1.0.0"
+    },
+    "prometheus_exporters:default:1.0.0" : {
+      "Order" : 10600,
+      "Spec" : "default",
+      "Name" : "prometheus_exporters:default:1.0.0",
+      "Project" : "prometheus_exporters",
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
     }

@@ -1,0 +1,54 @@
+---
+- name: Check Linux distribution
+  fail:
+    msg: "This role is not supported on this Linux distribution"
+  when: ansible_os_family not in ['RedHat']
+
+- name: Remove conflicting packages
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - docker
+    - docker-client
+    - docker-client-latest
+    - docker-common
+    - docker-latest
+    - docker-latest-logrotate
+    - docker-logrotate
+    - docker-engine
+  become: true
+
+- name: Add Docker repository
+  yum_repository:
+    name: docker-ce
+    description: Docker CE Stable Repository
+    baseurl: "https://download.docker.com/linux/centos/{{ ansible_distribution_major_version }}/{{ ansible_architecture }}/stable"
+    gpgcheck: yes
+    gpgkey: "https://download.docker.com/linux/centos/gpg"
+  become: true
+
+- name: Install Docker
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - docker-buildx-plugin
+    - docker-compose-plugin
+  become: true
+
+- name: Enable and start Docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  become: true
+
+- name: Install Docker Python package
+  pip:
+    name: docker
+    state: present
+  become: true

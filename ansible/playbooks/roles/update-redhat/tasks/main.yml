@@ -1,0 +1,17 @@
+---
+- name: Update OS packages
+  yum:
+    name: '*'
+    state: latest
+    exclude:
+      - cyclecloud*
+  register: yum_updates
+  become: true
+
+- name: Reboot if OS kernel updates were installed
+  reboot:
+    reboot_timeout: 600
+    connect_timeout: 15
+    msg: "Reboot initiated by Ansible for OS updates"
+  when: dict((yum_updates.changes|default(dict())).updated|default([])).kernel is defined
+  become: true
