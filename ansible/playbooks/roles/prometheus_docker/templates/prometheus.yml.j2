@@ -14,10 +14,20 @@ scrape_configs:
     static_configs:
       # This is running in this container, so localhost works
       - targets: ["localhost:9090"]
-  - job_name: "prometheus-vm"
+  - job_name: "node_exporter"
     static_configs:
-      # This is running on host, so we need to reference the host via docker magic and add 'extra_hosts' arg to docker when standing-up
       - targets: ["host.docker.internal:9100"]
+    azure_sd_configs:
+    - environment: AzurePublicCloud
+      authentication_method: ManagedIdentity
+      subscription_id: "{{ subscriptionId }}"
+      resource_group: "{{ resourceGroup }}"
+      refresh_interval: 1m
+      port: 9100
+    relabel_configs:
+      - source_labels: [__meta_azure_machine_tag_PrometheusTarget]
+        regex: (scheduler|login)
+        action: keep
   - job_name: "cluster-hpc_nvidia_exporter"
     azure_sd_configs:
     - environment: AzurePublicCloud
