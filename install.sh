@@ -138,6 +138,7 @@ if [ ${RUN_BICEP} == true ]; then
     APP_ID=$(jq -r '.principalName' ${ROLE_ASSIGNMENT_OUTPUT_FILE})
     jq --arg appId "${APP_ID}" '.globalVars.value.prometheusMetricsPubAppId = $appId' ${DEPLOYMENT_OUTPUT} > temp.json && mv temp.json ${DEPLOYMENT_OUTPUT}
     rm -f ${ROLE_ASSIGNMENT_OUTPUT_FILE}
+
 fi
 
 # Use the latest available Bicep deployment output
