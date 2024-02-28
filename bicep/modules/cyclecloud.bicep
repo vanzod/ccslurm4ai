@@ -67,6 +67,7 @@ resource cycleserverNIC 'Microsoft.Network/networkInterfaces@2019-11-01' = {
   name: 'cycleserverNIC'
   location: region
   properties: {
+    enableAcceleratedNetworking: true
     ipConfigurations: [
       {
         name: 'ipconfig1'

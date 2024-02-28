@@ -19,6 +19,7 @@ resource loginNIC 'Microsoft.Network/networkInterfaces@2019-11-01' = [ for i in 
   name: 'login${i}NIC'
   location: region
   properties: {
+    enableAcceleratedNetworking: true
     ipConfigurations: [
       {
         name: 'ipconfig1'
