@@ -3,8 +3,10 @@ param subnetIds object
 param allowedIpRange string
 param config object
 
+var anfAccountName = substring('${config.accountName}-${uniqueString(resourceGroup().id)}', 0, 16)
+
 resource anfAccount 'Microsoft.NetApp/netAppAccounts@2022-11-01' = {
-  name: config.accountName
+  name: anfAccountName
   location: region
   properties: {}
 }
