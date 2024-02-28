@@ -1,9 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-RESOURCE_GROUP="<RG_NAME>"
-SUBSCRIPTION="<SUBSCRIPTION_NAME>"
-REGION="<REGION_NAME>"
+export RESOURCE_GROUP="<RG_NAME>"
+export SUBSCRIPTION="<SUBSCRIPTION_NAME>"
+export REGION="<REGION_NAME>"
 
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 TEMPLATES_PATH="${MYDIR}/templates"
