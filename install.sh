@@ -156,8 +156,12 @@ create_bastion_scripts 'prometheus' ${DEPLOYMENT_OUTPUT} ${VM_ID}
 ###############
 
 if [ ${RUN_ANSIBLE} == true ]; then
+
     # Install Ansible in conda environment
     [ -d ./miniconda ] || ./ansible/install/install_ansible.sh
+
+    # Activate conda environment
+    source ${MYDIR}/miniconda/bin/activate
 
     # Create inventory file with the appropriate variable to execute through jump host
     ANSIBLE_INVENTORY=${MYDIR}/ansible/inventory.json
