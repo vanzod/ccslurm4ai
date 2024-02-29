@@ -25,6 +25,9 @@ The Azure infrastructure is deployed using Bicep while the configuration of all 
 
 - A Linux terminal with Bash shell (on Windows use [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install)).
 - Azure CLI installed ([docs here](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt)) and signed into the desired Azure tenant ([docs here](https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli-interactively)).
+- The following Azure CLI extensions must be installed ([docs here](https://learn.microsoft.com/en-us/cli/azure/azure-cli-extensions-overview)):
+  - ssh: `az extension add --name ssh`
+  - bastion: `az extension add --name bastion`
 - Your Azure account must have "Owner" role on the target subscription and resource group.
 - When using the default configuration, the target subscription must have the follwing minimum compute quota (see [here](https://learn.microsoft.com/en-us/azure/networking/check-usage-against-limits#azure-portal) on how to check):
   - Standard NDSH100v5: 192 vCPUs
