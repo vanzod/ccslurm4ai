@@ -139,7 +139,6 @@ if [ ${RUN_BICEP} == true ]; then
 
     # Sometimes the application ID is not immediately available, so we try again
     while [ $(echo $APP_ID | wc -m) -lt 37 ]; do
-        echo $APP_ID
         sleep 5
         APP_ID=$(az role assignment list --role 'Monitoring Metrics Publisher' --assignee ${VM_PRINCIPAL_ID} --scope ${ROLE_SCOPE} --query '[].principalName' --output tsv)
     done
