@@ -26,8 +26,16 @@
   command: az grafana folder create --name {{managedGrafanaName}} --resource-group {{resourceGroup}} --title '{{item}}'
   loop: "{{dashboard_folders}}"
   delegate_to: localhost
+  when: item != 'General'
 
-- name: Import Grafana dashboard templates
+- name: Import Grafana dashboard templates in custom folders
   command: az grafana dashboard import --name {{managedGrafanaName}} --resource-group {{resourceGroup}} --folder '{{item.path | dirname | basename}}' --definition {{item.path}}
   loop: "{{dashboard_templates.files}}"
   delegate_to: localhost
+  when: item.path | dirname | basename != 'General'
+
+- name: Import Grafana dashboard templates in General folder
+  command: az grafana dashboard import --name {{managedGrafanaName}} --resource-group {{resourceGroup}} --definition {{item.path}}
+  loop: "{{dashboard_templates.files}}"
+  delegate_to: localhost
+  when: item.path | dirname | basename == 'General'
