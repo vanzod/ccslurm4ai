@@ -14,7 +14,7 @@
   "SchedulerClusterInitSpecs" : {},
   "NFSSchedDisable" : false,
   "slurm" : null,
-  "configuration_slurm_version" : "23.02.6-1",
+  "configuration_slurm_version" : "23.02.7-1",
   "configuration_slurm_ha_enabled" : false,
   "configuration_slurm_shutdown_policy" : "Terminate",
   "configuration_slurm_accounting_enabled" : true,
@@ -31,16 +31,8 @@
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
     },
-    "fix_azslurm_future:default:1.0.0" : {
-      "Order" : 10100,
-      "Spec" : "default",
-      "Name" : "fix_azslurm_future:default:1.0.0",
-      "Project" : "fix_azslurm_future",
-      "Locker" : "{{lockerName.stdout}}",
-      "Version" : "1.0.0"
-    },
     "install_pmix:default:1.0.0" : {
-      "Order" : 10200,
+      "Order" : 10100,
       "Spec" : "default",
       "Name" : "install_pmix:default:1.0.0",
       "Project" : "install_pmix",
@@ -48,7 +40,7 @@
       "Version" : "1.0.0"
     },
     "fix_ndv5_gres:default:1.0.0" : {
-      "Order" : 10300,
+      "Order" : 10200,
       "Spec" : "default",
       "Name" : "fix_ndv5_gres:default:1.0.0",
       "Project" : "fix_ndv5_gres",
@@ -56,7 +48,7 @@
       "Version" : "1.0.0"
     },
     "cc_slurm_nhc:default:1.0.0" : {
-      "Order" : 10400,
+      "Order" : 10300,
       "Spec" : "default",
       "Name" : "cc_slurm_nhc:default:1.0.0",
       "Project" : "cc_slurm_nhc",
@@ -64,7 +56,7 @@
       "Version" : "1.0.0"
     },
     "fix_accounting_storage_host:default:1.0.0" : {
-      "Order" : 10500,
+      "Order" : 10400,
       "Spec" : "default",
       "Name" : "fix_accounting_storage_host:default:1.0.0",
       "Project" : "fix_accounting_storage_host",
@@ -72,7 +64,7 @@
       "Version" : "1.0.0"
     },
     "prometheus_exporters:default:1.0.0" : {
-      "Order" : 10600,
+      "Order" : 10500,
       "Spec" : "default",
       "Name" : "prometheus_exporters:default:1.0.0",
       "Project" : "prometheus_exporters",
@@ -92,16 +84,8 @@
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
     },
-    "fix_node_as_hostname:default:1.0.0" : {
-      "Order" : 10100,
-      "Spec" : "default",
-      "Name" : "fix_node_as_hostname:default:1.0.0",
-      "Project" : "fix_node_as_hostname",
-      "Locker" : "{{lockerName.stdout}}",
-      "Version" : "1.0.0"
-    },
     "prometheus_exporters:default:1.0.0" : {
-      "Order" : 10200,
+      "Order" : 10100,
       "Spec" : "default",
       "Name" : "prometheus_exporters:default:1.0.0",
       "Project" : "prometheus_exporters",
@@ -124,16 +108,8 @@
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
     },
-    "fix_node_as_hostname:default:1.0.0" : {
-      "Order" : 10100,
-      "Spec" : "default",
-      "Name" : "fix_node_as_hostname:default:1.0.0",
-      "Project" : "fix_node_as_hostname",
-      "Locker" : "{{lockerName.stdout}}",
-      "Version" : "1.0.0"
-    },
     "misc_config_nd:default:1.0.0" : {
-      "Order" : 10200,
+      "Order" : 10100,
       "Spec" : "default",
       "Name" : "misc_config_nd:default:1.0.0",
       "Project" : "misc_config_nd",
@@ -141,7 +117,7 @@
       "Version" : "1.0.0"
     },
     "install_pmix:default:1.0.0" : {
-      "Order" : 10300,
+      "Order" : 10200,
       "Spec" : "default",
       "Name" : "install_pmix:default:1.0.0",
       "Project" : "install_pmix",
@@ -157,7 +133,7 @@
       "Version" : "1.0.0"
     },
     "prometheus_exporters:default:1.0.0" : {
-      "Order" : 10600,
+      "Order" : 10400,
       "Spec" : "default",
       "Name" : "prometheus_exporters:default:1.0.0",
       "Project" : "prometheus_exporters",
@@ -181,16 +157,8 @@
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
     },
-    "fix_node_as_hostname:default:1.0.0" : {
-      "Order" : 10100,
-      "Spec" : "default",
-      "Name" : "fix_node_as_hostname:default:1.0.0",
-      "Project" : "fix_node_as_hostname",
-      "Locker" : "{{lockerName.stdout}}",
-      "Version" : "1.0.0"
-    },
     "install_pmix:default:1.0.0" : {
-      "Order" : 10200,
+      "Order" : 10100,
       "Spec" : "default",
       "Name" : "install_pmix:default:1.0.0",
       "Project" : "install_pmix",
