@@ -136,6 +136,14 @@ if [ ${RUN_BICEP} == true ]; then
 
     # Add the system managed identity application ID to the deployment output file
     APP_ID=$(jq -r '.principalName' ${ROLE_ASSIGNMENT_OUTPUT_FILE})
+
+    # Sometimes the application ID is not immediately available, so we try again
+    while [ $(echo $APP_ID | wc -m) -lt 37 ]; do
+        echo $APP_ID
+        sleep 5
+        APP_ID=$(az role assignment list --role 'Monitoring Metrics Publisher' --assignee ${VM_PRINCIPAL_ID} --scope ${ROLE_SCOPE} --query '[].principalName' --output tsv)
+    done
+
     jq --arg appId "${APP_ID}" '.globalVars.value.prometheusMetricsPubAppId = $appId' ${DEPLOYMENT_OUTPUT} > temp.json && mv temp.json ${DEPLOYMENT_OUTPUT}
     rm -f ${ROLE_ASSIGNMENT_OUTPUT_FILE}
 
