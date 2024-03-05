@@ -55,7 +55,7 @@ while getopts ":abh" OPT; do
         h) help
            exit 0;;
         \?) help
-            exit 1;;
+           exit 1;;
     esac
 done
 
@@ -167,7 +167,7 @@ if [ ${RUN_ANSIBLE} == true ]; then
     # Install Ansible in conda environment
     [ -d ./miniconda ] || ./ansible/install/install_ansible.sh
 
-    # The special variable @ must be set to empty before activating the conda 
+    # The special variable @ must be set to empty before activating the conda
     # environment as the conda activate script appends it to the conda command
     # causing it to fail if still containing the install script options
     set --
