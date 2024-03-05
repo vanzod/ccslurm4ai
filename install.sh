@@ -189,7 +189,7 @@ if [ ${RUN_ANSIBLE} == true ]; then
     sleep 5
 
     # Kill tunnel processes on exit
-    TUNNEL_PIDS=$(ps aux | grep bastion | awk '{print $2}' | head -n -1)
+    TUNNEL_PIDS=$(ps aux | grep bastion | grep -v grep | awk '{print $2}')
     trap 'kill $(echo $TUNNEL_PIDS)' EXIT
 
     # Run Ansible playbooks
