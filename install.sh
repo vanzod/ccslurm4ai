@@ -165,7 +165,7 @@ create_bastion_scripts 'prometheus' ${DEPLOYMENT_OUTPUT} ${VM_ID}
 if [ ${RUN_ANSIBLE} == true ]; then
 
     # Install Ansible in conda environment
-    [ -d ./miniconda ] || ./ansible/install/install_ansible.sh
+    [ -d ./miniconda ] || ./ansible/install/install_ansible.sh > "${MYDIR}/ansible_install.log" 2>&1
 
     # The special variable @ must be set to empty before activating the conda
     # environment as the conda activate script appends it to the conda command
