@@ -61,15 +61,15 @@ The Azure infrastructure is deployed using Bicep while the configuration of all 
    resource_group_name: example_rg
    ```
 
-  Optionally, the following variables can be defined to specify the tags for the resource group and the Azure Monitor Workspace respectively:
+   Optionally, the following variables can be defined to specify the tags for the resource group and the Azure Monitor Workspace respectively:
 
-  ```yaml
-  resource_group_tags:
-    tag1: value1
-    tag2: value2
-  monitor_tags:
-    tag3: value3
-  ```
+   ```yaml
+   resource_group_tags:
+     tag1: value1
+     tag2: value2
+   monitor_tags:
+     tag3: value3
+   ```
 
 3. Execute the install script:
 
