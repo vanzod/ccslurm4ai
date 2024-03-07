@@ -1,11 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-export RESOURCE_GROUP="<RG_NAME>"
-export SUBSCRIPTION="<SUBSCRIPTION_NAME>"
-export REGION="<REGION_NAME>"
-
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+CONFIG_FILE="${MYDIR}/config.json"
 TEMPLATES_PATH="${MYDIR}/templates"
 
 help()
@@ -55,7 +52,7 @@ while getopts ":abh" OPT; do
         h) help
            exit 0;;
         \?) help
-           exit 1;;
+            exit 1;;
     esac
 done
 
@@ -72,12 +69,23 @@ cmd_exists jq
 cmd_exists perl
 cmd_exists rsync
 
+# Check if config file exists
+if [ ! -f "${CONFIG_FILE}" ]; then
+    echo "Config file not found. Please create a config.json file with the required variables."
+    exit 1
+fi
+
 # Make sure submodules are also cloned
 git submodule update --init --recursive
 
 #############
 ### BICEP ###
 #############
+
+# Variables must be exported to be visible from Ansible
+export RESOURCE_GROUP=$(jq -r '.resource_group_name' ${CONFIG_FILE})
+export SUBSCRIPTION=$(jq -r '.subscription_name' ${CONFIG_FILE})
+export REGION=$(jq -r '.region' ${CONFIG_FILE})
 
 USERNAME=$(grep cycleAdminUsername bicep/params.bicepparam | cut -d"'" -f 2)
 KEYFILE="${USERNAME}_id_rsa"
@@ -165,9 +173,9 @@ create_bastion_scripts 'prometheus' ${DEPLOYMENT_OUTPUT} ${VM_ID}
 if [ ${RUN_ANSIBLE} == true ]; then
 
     # Install Ansible in conda environment
-    [ -d ./miniconda ] || ./ansible/install/install_ansible.sh > "${MYDIR}/ansible_install.log" 2>&1
+    [ -d ./miniconda ] || ./ansible/install/install_ansible.sh
 
-    # The special variable @ must be set to empty before activating the conda
+    # The special variable @ must be set to empty before activating the conda 
     # environment as the conda activate script appends it to the conda command
     # causing it to fail if still containing the install script options
     set --
@@ -189,7 +197,7 @@ if [ ${RUN_ANSIBLE} == true ]; then
     sleep 5
 
     # Kill tunnel processes on exit
-    TUNNEL_PIDS=$(ps aux | grep bastion | grep -v grep | awk '{print $2}')
+    TUNNEL_PIDS=$(ps aux | grep bastion | awk '{print $2}' | head -n -1)
     trap 'kill $(echo $TUNNEL_PIDS)' EXIT
 
     # Run Ansible playbooks
