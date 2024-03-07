@@ -54,10 +54,10 @@ The Azure infrastructure is deployed using Bicep while the configuration of all 
 
 2. Edit the following variables in the `config.json` script and insert your target resource group, subscription and region names:
 
-   ```json
-   "region": "example_region",
-   "subscription_name": "example_subscription",
-   "resource_group_name": "example_rg"
+   ```yml
+   region: example_region
+   subscription_name: example_subscription
+   resource_group_name: example_rg
    ```
 
 3. Execute the install script:

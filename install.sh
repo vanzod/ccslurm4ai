@@ -2,7 +2,7 @@
 set -euo pipefail
 
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-CONFIG_FILE="${MYDIR}/config.json"
+CONFIG_FILE="${MYDIR}/config.yml"
 TEMPLATES_PATH="${MYDIR}/templates"
 
 help()
@@ -66,13 +66,25 @@ cmd_exists() {
 
 cmd_exists az
 cmd_exists jq
+cmd_exists yq
 cmd_exists perl
 cmd_exists rsync
 
-# Check if config file exists
+# Check if config file exists and contains the expected non-null variables
 if [ ! -f "${CONFIG_FILE}" ]; then
     echo "Config file not found. Please create a config.json file with the required variables."
     exit 1
+else
+    EXPECTED_VARS=("region" "subscription_name" "resource_group_name")
+    
+    for VAR in "${EXPECTED_VARS[@]}"; do
+        if ! yq -e ".${VAR}" ${CONFIG_FILE} > /dev/null; then
+            echo "Error: Missing or null variable ${VAR} in ${CONFIG_FILE}"
+            exit 1
+        fi
+    done
+
+    echo 'Configuration file is valid  :-)'
 fi
 
 # Make sure submodules are also cloned
@@ -83,9 +95,9 @@ git submodule update --init --recursive
 #############
 
 # Variables must be exported to be visible from Ansible
-export RESOURCE_GROUP=$(jq -r '.resource_group_name' ${CONFIG_FILE})
-export SUBSCRIPTION=$(jq -r '.subscription_name' ${CONFIG_FILE})
-export REGION=$(jq -r '.region' ${CONFIG_FILE})
+export RESOURCE_GROUP=$(yq -r '.resource_group_name' ${CONFIG_FILE})
+export SUBSCRIPTION=$(yq -r '.subscription_name' ${CONFIG_FILE})
+export REGION=$(yq -r '.region' ${CONFIG_FILE})
 
 USERNAME=$(grep cycleAdminUsername bicep/params.bicepparam | cut -d"'" -f 2)
 KEYFILE="${USERNAME}_id_rsa"
