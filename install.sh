@@ -2,7 +2,7 @@
 set -euo pipefail
 
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-CONFIG_FILE="${MYDIR}/config.yml"
+CONFIG_FILE="${MYDIR}/config.yaml"
 TEMPLATES_PATH="${MYDIR}/templates"
 
 help()

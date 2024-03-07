@@ -52,7 +52,7 @@ The Azure infrastructure is deployed using Bicep while the configuration of all 
    cd ccslurm4ai
    ```
 
-2. Edit the following variables in the `config.json` script and insert your target resource group, subscription and region names:
+2. Edit the following variables in the `config.yaml` script and insert your target resource group, subscription and region names:
 
    ```yml
    region: example_region
