@@ -34,6 +34,7 @@ The Azure infrastructure is deployed using Bicep while the configuration of all 
   - Standard Dsv4: 36 vCPUs
 - Additional software:
   - *jq* JSON processor
+  - *yq* YAML processor
   - *perl* interpreter
   - *rsync*
   - *git*
