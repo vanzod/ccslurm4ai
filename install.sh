@@ -94,7 +94,7 @@ git submodule update --init --recursive
 ### BICEP ###
 #############
 
-# Variables must be exported to be visible from Ansible
+# Those variables must be exported to be visible from Ansible
 export RESOURCE_GROUP=$(yq -r '.resource_group_name' ${CONFIG_FILE})
 export SUBSCRIPTION=$(yq -r '.subscription_name' ${CONFIG_FILE})
 export REGION=$(yq -r '.region' ${CONFIG_FILE})
@@ -132,6 +132,14 @@ if [ ${RUN_BICEP} == true ]; then
 
     # Required to grant access to key vault secrets
     export USER_OBJECTID=$(az ad signed-in-user show --query id --output tsv)
+
+    # Create JSON files for additional bicep variables
+    set +e  # Ignore errors when the optional variables are not present
+    yq -ej '.resource_group_tags' ${CONFIG_FILE} > bicep/rg_tags.json
+    [ $? -ne 0 ] && echo '{}' > bicep/rg_tags.json
+    yq -ej '.monitor_tags' ${CONFIG_FILE} > bicep/monitor_tags.json
+    [ $? -ne 0 ] && echo '{}' > bicep/monitor_tags.json
+    set -e  # Resume normal error handling
 
     # Start deployment
     az deployment sub create --template-file bicep/main.bicep \

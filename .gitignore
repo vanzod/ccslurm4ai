@@ -8,3 +8,4 @@ ansible/inventory.json
 ansible/group_vars
 ansible/templates/ssh_jumphost_vars.json
 miniconda
+bicep/*_tags.json

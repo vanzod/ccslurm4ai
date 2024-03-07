@@ -9,10 +9,13 @@ param anfConfig object
 param MySqlConfig object
 param roleDefinitionIds object
 param deployingUserObjId string
+param rg_tags object
+param monitor_tags object
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   name: rgName
   location: region
+  tags: rg_tags
 }
 
 module clusterNetwork 'modules/network.bicep' = {
@@ -113,6 +116,7 @@ module telemetryInfra 'modules/telemetry.bicep' = {
     roleDefinitionIds: roleDefinitionIds
     principalObjId: deployingUserObjId
     subnetIds: clusterNetwork.outputs.subnetIds
+    monitor_tags: monitor_tags
   }
   dependsOn: [
     resourceGroup

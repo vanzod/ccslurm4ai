@@ -1,11 +1,13 @@
 param region string
 param principalObjId string
 param roleDefinitionIds object
+param monitor_tags object
 
 resource azureMonitorWorkspace 'Microsoft.Monitor/accounts@2023-04-03' = {
   name: 'managedPrometheus'
   location: region
   properties: {}
+  tags: monitor_tags
 }
 
 resource grafana 'Microsoft.Dashboard/grafana@2023-09-01' = {

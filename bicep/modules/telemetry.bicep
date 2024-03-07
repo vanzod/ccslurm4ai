@@ -6,6 +6,7 @@ param config object
 param principalObjId string
 param roleDefinitionIds object
 param subnetIds object
+param monitor_tags object
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' existing = {
   name: rgName
@@ -18,6 +19,7 @@ module workspaceGrafana 'managed_prometheus_grafana.bicep' = {
     region: region
     principalObjId: principalObjId
     roleDefinitionIds: roleDefinitionIds
+    monitor_tags: monitor_tags
   }
 }
 

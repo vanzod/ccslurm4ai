@@ -3,6 +3,8 @@ using './main.bicep'
 param region = readEnvironmentVariable('REGION', '')
 param rgName = readEnvironmentVariable('RESOURCE_GROUP', '')
 param deployingUserObjId = readEnvironmentVariable('USER_OBJECTID', '')
+param rg_tags = loadJsonContent('./rg_tags.json')
+param monitor_tags = loadJsonContent('./monitor_tags.json')
 
 param vnetConfig = {
   name: 'clusterVnet'

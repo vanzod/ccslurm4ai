@@ -55,11 +55,21 @@ The Azure infrastructure is deployed using Bicep while the configuration of all 
 
 2. Edit the following variables in the `config.yaml` script and insert your target resource group, subscription and region names:
 
-   ```yml
+   ```yaml
    region: example_region
    subscription_name: example_subscription
    resource_group_name: example_rg
    ```
+
+  Optionally, the following variables can be defined to specify the tags for the resource group and the Azure Monitor Workspace respectively:
+
+  ```yaml
+  resource_group_tags:
+    tag1: value1
+    tag2: value2
+  monitor_tags:
+    tag3: value3
+  ```
 
 3. Execute the install script:
 
