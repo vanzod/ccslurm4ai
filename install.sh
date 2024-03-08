@@ -70,22 +70,8 @@ cmd_exists yq
 cmd_exists perl
 cmd_exists rsync
 
-# Check if config file exists and contains the expected non-null variables
-if [ ! -f "${CONFIG_FILE}" ]; then
-    echo "Config file not found. Please create a config.json file with the required variables."
-    exit 1
-else
-    EXPECTED_VARS=("region" "subscription_name" "resource_group_name")
-    
-    for VAR in "${EXPECTED_VARS[@]}"; do
-        if ! yq -e ".${VAR}" ${CONFIG_FILE} > /dev/null; then
-            echo "Error: Missing or null variable ${VAR} in ${CONFIG_FILE}"
-            exit 1
-        fi
-    done
-
-    echo 'Configuration file is valid  :-)'
-fi
+# Check that config file is valid
+./scripts/validate_config.sh ${CONFIG_FILE}
 
 # Make sure submodules are also cloned
 git submodule update --init --recursive
