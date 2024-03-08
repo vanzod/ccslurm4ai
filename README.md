@@ -6,6 +6,9 @@
 - [Connection](#connection)
   - [Using Bastion](#using-bastion)
   - [Using public IPs](#using-public-ips)
+  - [Visual Studio Code](#visual-studio-code)
+    - [Use code tunnel from the target VM](#use-code-tunnel-from-the-target-vm)
+    - [Open a tunnel from local computer](#open-a-tunnel-from-local-computer)
 - [Nodes management](#nodes-management)
 - [Users management](#users-management)
 - [Cluster customization](#cluster-customization)
@@ -140,37 +143,75 @@ The installer script will automatically generate a set of Bash scripts to simpli
 
     Open your internet browser and use the URL: `https://127.0.0.1:10443`
 
-  - *Connect to the desired remote VM through VS Code remote SSH extension*
-
-    On a terminal, open the tunnel targeting the remote SSH port (in the example on `login3`) as follows:
-
-    ```bash
-    ./bastion_tunnel_login.sh 22 10022 3
-    ```
-
-    After installing the Remote Explorer extension in VS Code and copying the user private SSH key to a location in the Windows file system, select the Remote Explorer icon on the left bar and select "Remotes (Tunnels/SSH) in the drop-down menu:
-
-    ![Infrastructure diagram](images/vscode_remotes_1.png)
-
-    Create a new SSH remote by clicking on the + icon and adding the ssh command line (with the appropriate changes for SSH key path and remote user name) as shown below:
-
-    ![Infrastructure diagram](images/vscode_remotes_2.png)
-
-    Hit enter and select the SSH config file to add the remote settings to.
-
-    After reloading the remotes by clicking on the highlighted icon, the new remote connection will appear in the SSH list:
-
-    ![Infrastructure diagram](images/vscode_remotes_3.png)
-
-    Now the remote configuration is complete. To connect to the target VM, hover on the remote line and click on the "Connect in New Window" icon:
-
-    ![Infrastructure diagram](images/vscode_remotes_4.png)
-
 ### Using public IPs
 
 **This option is strongly discouraged as it would increase the exposure of your infrastructure to external attacks.**
 
 The infrastructure configuration provides public IPs for the cycleserver and login nodes. By default no external traffic is allowed to reach those VMs. To change this, simply add an inbound security rule to the corresponding Network Security Group as described [here](https://learn.microsoft.com/en-us/azure/virtual-network/manage-network-security-group?tabs=network-security-group-portal#create-a-security-rule}).
+
+### Visual Studio Code
+
+You can connect to the Slurm cluster scheduler or login nodes as Visual Studio Code remotes in two ways.
+
+#### Use code tunnel from the target VM
+
+Please note that this method requires a valid GitHub account.
+
+First connect to the desired VM (in this example `login1`) by using the script generated at deployment:
+
+```bash
+./bastion_ssh_login 1
+```
+
+In the VM terminal, start the tunnel using the Code CLI:
+
+```bash
+slurmcluster-login1:~$ code tunnel
+```
+
+If this is the first time a tunnel is opened from this VM, Code CLI will ask to authenticate via GitHub. Use the web browser to reach https://github.com/login/device, use the code provided in the command output and authorize the required access. Keep this process running in the open terminal to keep the tunnel open.
+
+Open a local Visual Studio Code window and click on the blue icon on the bottom left corner to open a remote window:
+
+![VSCode open remote window](images/vscode_remotes_5.png)
+
+Then select "Connect to Tunnel..." in the drop-down menu:
+
+![VSCode connect to tunnel](images/vscode_remotes_6.png)
+
+followed by "GitHub" as the type of account used to start the tunnel:
+
+![VSCode GitHub tunnel](images/vscode_remotes_7.png)
+
+Once successfully connected to the GitHub account, select the remote VM name.
+
+The local Visual Studio Code instance is now connected to the remote VM.
+
+#### Open a tunnel from local computer
+
+On a terminal in the local computer, open the tunnel targeting the remote SSH port (in the example on `login3`) by using the generated script as follows:
+
+```bash
+./bastion_tunnel_login.sh 22 10022 3
+```
+
+After installing the Remote Explorer extension in VS Code and copying the user private SSH key to a location in the Windows file system, select the Remote Explorer icon on the left bar and select "Remotes (Tunnels/SSH) in the drop-down menu:
+
+![VSCode remote explorer](images/vscode_remotes_1.png)
+
+Create a new SSH remote by clicking on the + icon and adding the ssh command line (with the appropriate changes for SSH key path and remote user name) as shown below:
+
+![VSCode connection command](images/vscode_remotes_2.png)
+
+Hit enter and select the SSH config file to add the remote settings to.
+
+After reloading the remotes by clicking on the highlighted icon, the new remote connection will appear in the SSH list:
+
+![VSCode refresh remotes](images/vscode_remotes_3.png)
+
+Now the remote configuration is complete. To connect to the target VM, hover on the remote line and click on the "Connect in New Window" icon:
+
+![VSCode connect in new window](images/vscode_remotes_4.png)
 
 ## Nodes management
 
