@@ -94,11 +94,11 @@
     }
   },
   "HPCImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2023111801",
-  "HPCMachineType" : "Standard_ND96isr_H100_v5",
+  "HPCMachineType" : {{ hpcSku }},
   "MaxHPCExecuteCoreCount" : 192,
   "HPCMaxScalesetSize" : 100,
   "HPCOverprovision" : false,
-  "HPCMemoryDampen" : 0,
+  "HPCMemoryDampen" : {{ if "A100_v4" in hpcSku }} 8 {{ else }} 0 {{ end }},
   "HPCClusterInitSpecs" : {
     "cc_slurm_pyxis_enroot:default:1.0.0" : {
       "Order" : 10000,

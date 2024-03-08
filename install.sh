@@ -4,6 +4,10 @@ set -euo pipefail
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CONFIG_FILE="${MYDIR}/config.yaml"
 TEMPLATES_PATH="${MYDIR}/templates"
+SUPPORTED_SKUS=(
+    "Standard_ND96isr_H100_v5" \
+    "Standard_ND96amsr_A100_v4"
+)
 
 help()
 {
@@ -37,7 +41,6 @@ create_bastion_scripts()
             -e "s|<VMRESOURCEIDS>|${VMRESOURCEIDS_STR}|g" \
             -e "s|<SUBNAME>|${SUBSCRIPTION}|g" \
             ${TEMPLATES_PATH}/${TEMPLATE_ROOT}.template > ${TEMPLATE_ROOT}_${TARGET_NAME}.sh
-        chmod +x ${TEMPLATE_ROOT}_${TARGET_NAME}.sh
     done
 }
 
@@ -76,13 +79,31 @@ if [ ! -f "${CONFIG_FILE}" ]; then
     exit 1
 else
     EXPECTED_VARS=("region" "subscription_name" "resource_group_name")
-    
+
     for VAR in "${EXPECTED_VARS[@]}"; do
         if ! yq -e ".${VAR}" ${CONFIG_FILE} > /dev/null; then
             echo "Error: Missing or null variable ${VAR} in ${CONFIG_FILE}"
             exit 1
         fi
     done
+
+    # Add HPC sku if defined in the config file
+    HPC_SKU=$(yq -r '.hpc_sku' "${CONFIG_FILE}")
+    if [ -z "${HPC_SKU}" ]; then
+        # Default if first SKU is array, NDv5
+        HPC_SKU="${SUPPORTED_SKUS[0]}"
+    else
+        for SKU in "${SUPPORTED_SKUS[@]}"; do
+            if [ "${HPC_SKU}" == "${SKU}" ]; then
+                MATCH_FOUND=true
+                break
+            fi
+        done
+        if [[ -z "${MATCH_FOUND}" ]]; then
+            echo "Error: HPC SKU ${HPC_SKU} is not supported. Supported SKUs are:" "${SUPPORTED_SKUS[@]}"
+            exit 1
+        fi
+    fi
 
     echo 'Configuration file is valid  :-)'
 fi
@@ -174,6 +195,7 @@ if [ ${RUN_BICEP} == true ]; then
     jq --arg appId "${APP_ID}" '.globalVars.value.prometheusMetricsPubAppId = $appId' ${DEPLOYMENT_OUTPUT} > temp.json && mv temp.json ${DEPLOYMENT_OUTPUT}
     rm -f ${ROLE_ASSIGNMENT_OUTPUT_FILE}
 
+    jq --arg hpcSku "${HPC_SKU}" '.globalVars.value.hpcSku = $hpcSku' ${DEPLOYMENT_OUTPUT} > temp.json && mv temp.json ${DEPLOYMENT_OUTPUT}
 fi
 
 # Use the latest available Bicep deployment output
