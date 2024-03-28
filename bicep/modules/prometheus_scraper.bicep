@@ -32,6 +32,9 @@ resource prometheusNIC 'Microsoft.Network/networkInterfaces@2023-09-01' = {
 resource prometheus 'Microsoft.Compute/virtualMachines@2022-03-01' = {
   name: 'prometheus'
   location: region
+  tags: {
+    PrometheusTarget: 'prometheus'
+  }
   identity: {
     type: 'SystemAssigned'
   }
