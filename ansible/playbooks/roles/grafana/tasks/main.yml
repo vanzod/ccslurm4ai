@@ -33,9 +33,3 @@
   loop: "{{dashboard_templates.files}}"
   delegate_to: localhost
   when: item.path | dirname | basename != 'General'
-
-- name: Import Grafana dashboard templates in General folder
-  command: az grafana dashboard import --name {{managedGrafanaName}} --resource-group {{resourceGroup}} --definition {{item.path}}
-  loop: "{{dashboard_templates.files}}"
-  delegate_to: localhost
-  when: item.path | dirname | basename == 'General'
