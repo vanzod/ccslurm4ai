@@ -18,3 +18,9 @@ if is_compute_node; then
     sed -i 's/proc_check true/proc_check false/g' start_moneo_services.sh
     ./start_moneo_services.sh
 fi
+
+# Configure Slurm prolog/epilog for job id injection only on scheduler
+if is_slurm_controller; then
+    echo '/opt/azurehpc/tools/Moneo/examples/slurm/prologMoneo.sh' >> /sched/scripts/prolog.sh
+    echo '/opt/azurehpc/tools/Moneo/examples/slurm/epilogMoneo.sh' >> /sched/scripts/epilog.sh
+fi
