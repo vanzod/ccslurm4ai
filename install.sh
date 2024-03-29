@@ -196,7 +196,7 @@ if [ ${RUN_ANSIBLE} == true ]; then
 
     # Create global variables file
     mkdir -p ansible/group_vars/all
-    jq -s '.[].globalVars.value' ${DEPLOYMENT_OUTPUT} > ansible/group_vars/all/global_vars.yml
+    jq -s '.[].globalVars.value' ${DEPLOYMENT_OUTPUT} > ansible/group_vars/all/global_vars.json
 
     # Open SSH tunnel through bastion
     ./bastion_tunnel_cycleserver.sh 22 10022 &
