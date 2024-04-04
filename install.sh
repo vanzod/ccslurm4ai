@@ -41,6 +41,7 @@ create_bastion_scripts()
             -e "s|<VMRESOURCEIDS>|${VMRESOURCEIDS_STR}|g" \
             -e "s|<SUBNAME>|${SUBSCRIPTION}|g" \
             ${TEMPLATES_PATH}/${TEMPLATE_ROOT}.template > ${TEMPLATE_ROOT}_${TARGET_NAME}.sh
+        chmod +x ${TEMPLATE_ROOT}_${TARGET_NAME}.sh
     done
 }
 

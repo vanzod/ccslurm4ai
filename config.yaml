@@ -1,5 +1,5 @@
 ---
-region: "southcentralus"
-subscription_name: "f5a67d06-2d09-4090-91cc-e3298907a021"
-resource_group_name: "jesse-ccslurm-example-03"
-hpc_sku: "Standard_ND96amsr_A100_v4"
+region: null
+subscription_name: null
+resource_group_name: null
+hpc_sku: null

@@ -70,6 +70,14 @@
       "Project" : "prometheus_exporters",
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
+    },
+    "fix_slurm_memory_dampen:default:1.0.0" : {
+      "Order" : 10600,
+      "Spec" : "default",
+      "Name" : "fix_slurm_memory_dampen:default:1.0.0",
+      "Project" : "fix_slurm_memory_dampen",
+      "Locker" : "{{lockerName.stdout}}",
+      "Version" : "1.0.0"
     }
   },
   "NumberLoginNodes" : 3,
@@ -94,11 +102,11 @@
     }
   },
   "HPCImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2023111801",
-  "HPCMachineType" : {{ hpcSku }},
+  "HPCMachineType" : "{{ hpcSku }}",
   "MaxHPCExecuteCoreCount" : 192,
   "HPCMaxScalesetSize" : 100,
   "HPCOverprovision" : false,
-  "HPCMemoryDampen" : {{ if "A100_v4" in hpcSku }} 8 {{ else }} 0 {{ end }},
+  "HPCMemoryDampen" : {{ 8 if "A100_v4" in hpcSku else 0 }},
   "HPCClusterInitSpecs" : {
     "cc_slurm_pyxis_enroot:default:1.0.0" : {
       "Order" : 10000,
