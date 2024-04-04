@@ -4,6 +4,10 @@ set -euo pipefail
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CONFIG_FILE="${MYDIR}/config.yaml"
 TEMPLATES_PATH="${MYDIR}/templates"
+SUPPORTED_SKUS=(
+    "Standard_ND96isr_H100_v5" \
+    "Standard_ND96amsr_A100_v4"
+)
 
 help()
 {
@@ -160,6 +164,7 @@ if [ ${RUN_BICEP} == true ]; then
     jq --arg appId "${APP_ID}" '.globalVars.value.prometheusMetricsPubAppId = $appId' ${DEPLOYMENT_OUTPUT} > temp.json && mv temp.json ${DEPLOYMENT_OUTPUT}
     rm -f ${ROLE_ASSIGNMENT_OUTPUT_FILE}
 
+    jq --arg hpcSku "${HPC_SKU}" '.globalVars.value.hpcSku = $hpcSku' ${DEPLOYMENT_OUTPUT} > temp.json && mv temp.json ${DEPLOYMENT_OUTPUT}
 fi
 
 # Use the latest available Bicep deployment output
