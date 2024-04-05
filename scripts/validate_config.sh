@@ -21,8 +21,7 @@ EXPECTED_VARS=(
 
 SUPPORTED_SKUS=(
     "Standard_ND96isr_H100_v5" \
-    "Standard_ND96amsr_A100_v4" \
-    "Standard_ND96asr_A100_v4"
+    "Standard_ND96amsr_A100_v4"
 )
 
 # Check if config file exists and contains the expected non-null variables
