@@ -5,6 +5,7 @@ MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CONFIG_FILE="${MYDIR}/config.yaml"
 TEMPLATES_PATH="${MYDIR}/templates"
 
+
 help()
 {
     echo
@@ -71,7 +72,7 @@ cmd_exists perl
 cmd_exists rsync
 
 # Check that config file is valid
-./scripts/validate_config.sh ${CONFIG_FILE}
+source ./scripts/validate_config.sh
 
 # Make sure submodules are also cloned
 git submodule update --init --recursive
@@ -157,9 +158,12 @@ if [ ${RUN_BICEP} == true ]; then
         APP_ID=$(az role assignment list --role 'Monitoring Metrics Publisher' --assignee ${VM_PRINCIPAL_ID} --scope ${ROLE_SCOPE} --query '[].principalName' --output tsv)
     done
 
+    # Propogate env vars to Ansible via the deployment output file
     jq --arg appId "${APP_ID}" '.globalVars.value.prometheusMetricsPubAppId = $appId' ${DEPLOYMENT_OUTPUT} > temp.json && mv temp.json ${DEPLOYMENT_OUTPUT}
+    jq --arg hpcSku "${HPC_SKU}" '.globalVars.value.hpcSku = $hpcSku' ${DEPLOYMENT_OUTPUT} > temp.json && mv temp.json ${DEPLOYMENT_OUTPUT}
+    jq --arg hpcMaxCoreCount "${HPC_MAX_CORE_COUNT}" '.globalVars.value.hpcMaxCoreCount = $hpcMaxCoreCount' ${DEPLOYMENT_OUTPUT} > temp.json && mv temp.json ${DEPLOYMENT_OUTPUT}
+    jq --arg hpcMaxNumVMs "${HPC_MAX_NUM_VMS}" '.globalVars.value.hpcMaxNumVMs = $hpcMaxNumVMs' ${DEPLOYMENT_OUTPUT} > temp.json && mv temp.json ${DEPLOYMENT_OUTPUT}
     rm -f ${ROLE_ASSIGNMENT_OUTPUT_FILE}
-
 fi
 
 # Use the latest available Bicep deployment output

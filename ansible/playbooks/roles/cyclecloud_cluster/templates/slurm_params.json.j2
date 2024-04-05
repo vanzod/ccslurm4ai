@@ -78,6 +78,14 @@
       "Project" : "install_codecli",
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
+    },
+    "fix_slurm_memory_dampen:default:1.0.0" : {
+      "Order" : 10700,
+      "Spec" : "default",
+      "Name" : "fix_slurm_memory_dampen:default:1.0.0",
+      "Project" : "fix_slurm_memory_dampen",
+      "Locker" : "{{lockerName.stdout}}",
+      "Version" : "1.0.0"
     }
   },
   "NumberLoginNodes" : 3,
@@ -101,7 +109,7 @@
       "Version" : "1.0.0"
     },
     "install_codecli:default:1.0.0" : {
-      "Order" : 10600,
+      "Order" : 10200,
       "Spec" : "default",
       "Name" : "install_codecli:default:1.0.0",
       "Project" : "install_codecli",
@@ -110,11 +118,11 @@
     }
   },
   "HPCImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2023111801",
-  "HPCMachineType" : "Standard_ND96isr_H100_v5",
-  "MaxHPCExecuteCoreCount" : 192,
-  "HPCMaxScalesetSize" : 100,
+  "HPCMachineType" : "{{ hpcSku }}",
+  "MaxHPCExecuteCoreCount" : "{{ hpcMaxCoreCount }}",
+  "HPCMaxScalesetSize" : "{{ hpcMaxNumVMs }}",
   "HPCOverprovision" : false,
-  "HPCMemoryDampen" : 0,
+  "HPCMemoryDampen" : {{ 8 if "A100_v4" in hpcSku else 0 }},
   "HPCClusterInitSpecs" : {
     "cc_slurm_pyxis_enroot:default:1.0.0" : {
       "Order" : 10000,
