@@ -2,4 +2,6 @@
 region: null
 subscription_name: null
 resource_group_name: null
-hpc_sku: null
+hpc_sku: null # VM SKU for HPC partition
+hpc_max_core_count: null # Max core count for HPC partition (max-num-vms * cores-per-vm-sku)
+hpc_max_num_vms: null # Optional, max number of VMs per VMSS.  Default is 100.

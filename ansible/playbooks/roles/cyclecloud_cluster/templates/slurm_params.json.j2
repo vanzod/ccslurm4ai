@@ -78,6 +78,7 @@
       "Project" : "install_codecli",
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
+    },
     "fix_slurm_memory_dampen:default:1.0.0" : {
       "Order" : 10700,
       "Spec" : "default",
@@ -108,7 +109,7 @@
       "Version" : "1.0.0"
     },
     "install_codecli:default:1.0.0" : {
-      "Order" : 10600,
+      "Order" : 10200,
       "Spec" : "default",
       "Name" : "install_codecli:default:1.0.0",
       "Project" : "install_codecli",
@@ -118,8 +119,8 @@
   },
   "HPCImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2023111801",
   "HPCMachineType" : "{{ hpcSku }}",
-  "MaxHPCExecuteCoreCount" : 192,
-  "HPCMaxScalesetSize" : 100,
+  "MaxHPCExecuteCoreCount" : "{{ hpcMaxCoreCount }}",
+  "HPCMaxScalesetSize" : "{{ hpcMaxNumVMs }}",
   "HPCOverprovision" : false,
   "HPCMemoryDampen" : {{ 8 if "A100_v4" in hpcSku else 0 }},
   "HPCClusterInitSpecs" : {
