@@ -54,23 +54,17 @@ The Azure infrastructure is deployed using Bicep while the configuration of all 
    cd ccslurm4ai
    ```
 
-2. Edit the following variables in the `config.yaml` script and insert your target resource group, subscription and region names:
-
-   ```yaml
-   region: example_region
-   subscription_name: example_subscription
-   resource_group_name: example_rg
-   ```
-
-   Optionally, the following variables can be defined to specify the tags for the resource group and the Azure Monitor Workspace respectively:
-
-   ```yaml
-   resource_group_tags:
-     tag1: value1
-     tag2: value2
-   monitor_tags:
-     tag3: value3
-   ```
+2. Edit the `config.yaml` file with the required and optional paramaters in the table below.
+   
+   | Parameter             | Description                               | Required | Value                                                |
+   | --------------------- | ----------------------------------------- | -------- | ----------------------------------------------------- |
+   | `region`              | Azure region                              | Yes      | *string*                                              |
+   | `subscription_name`   | Subscription name                         | Yes      | *string*                                              |
+   | `resource_group_name` | Resource group name                       | Yes      | *string*                                              |
+   | `hpc_sku`             | VM series name for HPC partition nodes    | Yes      | Standard_ND96amsr_A100_v4<br>Standard_ND96isr_H100_v5 |
+   | `hpc_max_core_count`  | Total vCPU core count for HPC partition   | Yes      | *int* > 0                                             |
+   | `resource_group_tags` | Tags to assign to resource group          | No       | *dictionary*                                          |
+   | `monitor_tags`        | Tags to assign to Azure Monitor Workspace | No       | *dictionary*                                          |
 
 3. Execute the install script:
 
