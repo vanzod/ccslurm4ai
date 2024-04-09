@@ -20,8 +20,6 @@
 This infrastructure-as-code template automates the deployment of a CycleCloud Slurm cluster for running AI applications on Azure.
 The Azure infrastructure is deployed using Bicep while the configuration of all the components is performed with Ansible.
 
-**Currently only ND H100 v5 series VMs are supported as compute nodes. Support for other ND SKUs will be added soon.**
-
 ![Infrastructure diagram](images/infra.png)
 
 ## Prerequisites
