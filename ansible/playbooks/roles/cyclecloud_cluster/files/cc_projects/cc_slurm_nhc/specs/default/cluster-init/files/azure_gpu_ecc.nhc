@@ -33,8 +33,10 @@ function check_gpu_ecc() {
 
    collect_ecc_data
 
-   ecc_error_threshold=$1
-   ecc_sram_threshold=$2
+   row_remap_pending_threshold=0
+   row_remap_error_threshold=0
+   row_remap_uncorrectable_threshold=512
+   uncorrectable_sram_threshold=4
 
    if [[ ${#gpu_query_out_lines[*]} != ${#gpu_remapped_rows_query_out_lines[*]} ]]; then
       die 1 "$FUNCNAME: nvidia-smi (Number GPU's not correct), (${#gpu_query_out_lines[*]},${#gpu_remapped_rows_query_out_lines[*]})"
@@ -46,34 +48,25 @@ function check_gpu_ecc() {
       gpu_query_out_line=( ${gpu_query_out_lines[$i]} ) 
       IFS=$' \t\n'
       dbg "GPU id $i: row remap pending, (${gpu_remapped_rows_query_out_line[0]})"
-      if [[ ${gpu_remapped_rows_query_out_line[0]} > 0 ]]
+      if [[ ${gpu_remapped_rows_query_out_line[0]} > ${row_remap_pending_threshold} ]]
       then
          die 1 "$FUNCNAME: GPU id $i: Row remap pending"
       fi
       dbg "GPU id $i: row remap error, (${gpu_remapped_rows_query_out_line[1]})"
-      if [[ ${gpu_remapped_rows_query_out_line[1]} > 0 ]]
+      if [[ ${gpu_remapped_rows_query_out_line[1]} > ${row_remap_error_threshold} ]]
       then
          die 1 "$FUNCNAME: GPU id $i: Row remap error"
       fi
       dbg "GPU id $i: row remap uncorrectable error count, (${gpu_remapped_rows_query_out_line[3]})"
-      if [[ ${gpu_remapped_rows_query_out_line[3]} > 512 ]]
+      if [[ ${gpu_remapped_rows_query_out_line[3]} > ${row_remap_uncorrectable_threshold} ]]
       then
          die 1 "$FUNCNAME: GPU id $i: Row remap uncorrectable error count is too high"
       fi
       dbg "GPU id $i: No GPU row remap pending, row remap errors or row remap high count errors"
-      if [[ ${gpu_query_out_line[4]} -gt $ecc_sram_threshold || ${gpu_query_out_line[5]} -gt $ecc_sram_threshold ]]; then
-         die 1 "$FUNCNAME: GPU id $i: High SRAM correctable ECC error count detected, (${gpu_query_out_line[4]},${gpu_query_out_line[5]})"
-      elif [[ ${gpu_query_out_line[0]} -gt 0 || ${gpu_query_out_line[1]} -gt 0 ]]; then
-         die 1 "$FUNCNAME: GPU id $i: SRAM Uncorrectable ECC error count detected, (${gpu_query_out_line[0]},${gpu_query_out_line[1]})"
+      if [[ ${gpu_query_out_line[0]} -gt ${uncorrectable_sram_threshold} || ${gpu_query_out_line[1]} -gt ${uncorrectable_sram_threshold} ]]; then
+         die 1 "$FUNCNAME: GPU id $i: SRAM Uncorrectable ECC error count > ${uncorrectable_sram_threshold} detected, (${gpu_query_out_line[0]},${gpu_query_out_line[1]})"
       else
-         dbg "GPU id $i: Normal SRAM Uncorrectable/correctable ECC error count, (${gpu_query_out_line[0]},${gpu_query_out_line[1]},${gpu_query_out_line[4]},${gpu_query_out_line[5]})"
-      fi
-      if [[ -n $ecc_error_threshold ]]; then
-         if [[ ${gpu_query_out_line[2]} -gt $ecc_error_threshold || ${gpu_query_out_line[3]} -gt $ecc_error_threshold || ${gpu_query_out_line[6]} -gt $ecc_error_threshold || ${gpu_query_out_line[7]} -gt $ecc_error_threshold ]]; then
-	    die 1 "$FUNCNAME: GPU id $i: High DRAM Uncorrectable/correctable ECC error count detected, (${gpu_query_out_line[2]},${gpu_query_out_line[3]},${gpu_query_out_line[6]},${gpu_query_out_line[7]})"
-         else
-            dbg "GPU id $i: Normal DRAM Uncorrectable/correctable ECC error count, (${gpu_query_out_line[2]},${gpu_query_out_line[3]},${gpu_query_out_line[6]},${gpu_query_out_line[7]})"
-         fi
+         dbg "GPU id $i: Normal SRAM uncorrectable ECC error count, (${gpu_query_out_line[0]},${gpu_query_out_line[1]})"
       fi
    done
 return 0
