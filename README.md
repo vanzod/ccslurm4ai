@@ -55,13 +55,13 @@ The Azure infrastructure is deployed using Bicep while the configuration of all 
    ```
 
 2. Edit the `config.yaml` file with the required and optional paramaters in the table below.
-   
+
    | Parameter             | Description                               | Required | Value                                                |
    | --------------------- | ----------------------------------------- | -------- | ----------------------------------------------------- |
    | `region`              | Azure region                              | Yes      | *string*                                              |
    | `subscription_name`   | Subscription name                         | Yes      | *string*                                              |
    | `resource_group_name` | Resource group name                       | Yes      | *string*                                              |
-   | `hpc_sku`             | VM series name for HPC partition nodes    | Yes      | Standard_ND96amsr_A100_v4<br>Standard_ND96isr_H100_v5 |
+   | `hpc_sku`             | VM series name for HPC partition nodes    | Yes      | Standard_ND96asr_v4<br>Standard_ND96amsr_A100_v4<br>Standard_ND96isr_H100_v5 |
    | `hpc_max_core_count`  | Total vCPU core count for HPC partition   | Yes      | *int* > 0                                             |
    | `resource_group_tags` | Tags to assign to resource group          | No       | *dictionary*                                          |
    | `monitor_tags`        | Tags to assign to Azure Monitor Workspace | No       | *dictionary*                                          |
