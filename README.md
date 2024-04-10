@@ -24,13 +24,13 @@ The Azure infrastructure is deployed using Bicep while the configuration of all 
 
 ## Prerequisites
 
-- A Linux terminal with Bash shell (on Windows use [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install)).
+- A Unix-like terminal with a Bash-compatible shell (on Windows use [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install)).
 - Azure CLI installed ([docs here](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt)) and signed into the desired Azure tenant ([docs here](https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli-interactively)).
 - The following Azure CLI extensions must be installed ([docs here](https://learn.microsoft.com/en-us/cli/azure/azure-cli-extensions-overview)):
   - ssh: `az extension add --name ssh`
   - bastion: `az extension add --name bastion`
 - Your Azure account must have "Owner" role on the target subscription and resource group.
-- When using the default configuration, the target subscription must have the follwing minimum compute quota (see [here](https://learn.microsoft.com/en-us/azure/networking/check-usage-against-limits#azure-portal) on how to check):
+- When using the default configuration, the target subscription must have the following minimum compute quota (see [here](https://learn.microsoft.com/en-us/azure/networking/check-usage-against-limits#azure-portal) on how to check):
   - Standard NDSH100v5: 192 vCPUs
   - Standard Dsv4: 36 vCPUs
 - Additional software:
@@ -54,9 +54,9 @@ The Azure infrastructure is deployed using Bicep while the configuration of all 
    cd ccslurm4ai
    ```
 
-2. Edit the `config.yaml` file with the required and optional paramaters in the table below.
+2. Edit the `config.yaml` file with the required and optional parameters in the table below.
 
-   | Parameter             | Description                               | Required | Value                                                |
+   | Parameter             | Description                               | Required | Value                                                 |
    | --------------------- | ----------------------------------------- | -------- | ----------------------------------------------------- |
    | `region`              | Azure region                              | Yes      | *string*                                              |
    | `subscription_name`   | Subscription name                         | Yes      | *string*                                              |
@@ -82,7 +82,7 @@ The install script will automatically generate a set of new SSH keys for the `cy
 
 For security reasons access to all VMs is allowed only through [Bastion](https://learn.microsoft.com/en-us/azure/bastion/bastion-overview) by default.
 
-The installer script will automatically generate a set of Bash scripts to simplify the connection as *cycleadmin* to the deployed resources through Bastion. There are two sets of scripts to perform two different actions:
+The installer script will automatically generate a set of Bash scripts to simplify the connection as the *cycleadmin* user to the deployed resources through Bastion. There are two sets of scripts to perform two different actions:
 
 - **Connect via SSH** (`bastion_ssh_*.sh`)
 
@@ -143,7 +143,7 @@ The infrastructure configuration provides public IPs for the cycleserver and log
 
 ### Visual Studio Code
 
-You can connect to the Slurm cluster scheduler or login nodes as Visual Studio Code remotes in two ways.
+You can connect to the Slurm cluster scheduler or login nodes using [Visual Studio Code Remote Development](https://code.visualstudio.com/docs/remote/remote-overview) in two ways.
 
 #### Use code tunnel from the target VM
 
