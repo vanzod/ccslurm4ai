@@ -58,7 +58,7 @@ else
 
     # Default max number of VMs per VMSS is 100 as derived from historic VMSS Uniform limits
     HPC_MAX_NUM_VMS=$(yq -r '.hpc_max_num_vms' "${CONFIG_FILE}")
-    if [[ -z "${HPC_MAX_NUM_VMS}" ]]; then
+    if [[ -z "${HPC_MAX_NUM_VMS}" || "${HPC_MAX_NUM_VMS}" == "null" ]]; then
         HPC_MAX_NUM_VMS=100
     fi
     export HPC_MAX_NUM_VMS
