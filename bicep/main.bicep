@@ -3,9 +3,12 @@ targetScope = 'subscription'
 param region string
 param rgName string
 param vnetConfig object
+@secure()
 param cyclecloudConfig object
+@secure()
 param prometheusConfig object
 param anfConfig object
+@secure()
 param MySqlConfig object
 param roleDefinitionIds object
 param deployingUserObjId string
@@ -142,7 +145,6 @@ output globalVars object = {
   cycleserverName: CycleCloud.outputs.name
   cycleserverId: CycleCloud.outputs.id
   cycleserverAdmin: CycleCloud.outputs.adminUser
-  cycleserverAdminPubKey: CycleCloud.outputs.adminPublicKey
   clusterSubnetName: 'compute'
   keyVaultName: KeyVault.outputs.name
   lockerAccountName: CycleCloud.outputs.lockerSAName

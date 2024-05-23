@@ -1,6 +1,7 @@
 param region string
 param subnetIds object
 param allowedIpRange string
+@secure()
 param config object
 
 var anfAccountName = substring('${config.accountName}-${uniqueString(resourceGroup().id)}', 0, 16)

@@ -2,6 +2,7 @@ targetScope = 'subscription'
 
 param region string
 param rgName string
+@secure()
 param config object
 param principalObjId string
 param roleDefinitionIds object

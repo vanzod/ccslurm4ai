@@ -1,4 +1,5 @@
 param region string
+@secure()
 param config object
 param subnetIds object
 param kvName string
@@ -213,7 +214,5 @@ resource lockerContainer 'Microsoft.Storage/storageAccounts/blobServices/contain
 output name string = cycleserver.name
 output id string = cycleserver.id
 output adminUser string = cycleserver.properties.osProfile.adminUsername
-output adminPublicKey string = config.sshPublicKey
 output privateIp string = cycleserverNIC.properties.ipConfigurations[0].properties.privateIPAddress
 output lockerSAName string = lockerAccount.name
-
