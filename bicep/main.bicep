@@ -156,7 +156,6 @@ output globalVars object = {
   vnetName: clusterNetwork.outputs.vnetName
   mySqlFqdn: MySql.outputs.fqdn
   mySqlUser: MySql.outputs.user
-  mySqlPwd: MySqlConfig.dbAdminPwd
   loginNicsCount: loginNIC.outputs.count
   loginNicsId: loginNIC.outputs.ids
   loginNicsPublicIP: loginNIC.outputs.public_ips

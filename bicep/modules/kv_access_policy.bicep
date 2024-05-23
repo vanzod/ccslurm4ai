@@ -17,5 +17,7 @@ resource kvAccessPolicy 'Microsoft.KeyVault/vaults/accessPolicies@2022-07-01' = 
         permissions: permissions
       }
     ]
+    enableSoftDelete: true
+    enablePurgeProtection: true
   }
 }
