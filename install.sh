@@ -277,12 +277,13 @@ if [ ${RUN_SECURE} == true ]; then
     echo "Applying post-deployment security configuration"
 
     # Remove NRMS Rule 103 and Rule 104 which are applied by policy if they exist in the NSG
-    NRMS_NSG_NAME=$(az network nsg list --resource-group ${RESOURCE_GROUP} --query "[?contains(name, 'NRMS')].name" -o tsv)
-    if [ -n "${NRMS_NSG_NAME}" ]; then
-        echo "Removing NRMS rules 103 and 104 from NSG ${NRMS_NSG_NAME}"
-        az network nsg rule delete --name "NRMS-Rule-103" --nsg-name ${NRMS_NSG_NAME} --resource-group ${RESOURCE_GROUP} --output none
-        az network nsg rule delete --name "NRMS-Rule-104" --nsg-name ${NRMS_NSG_NAME} --resource-group ${RESOURCE_GROUP} --output none
-    fi
+    # These rules are automatically added to engineering accounts, but then violate some other security policies
+    NSG_NAMES=$(az network nsg list --resource-group ${RESOURCE_GROUP} --query "[].name" -o tsv)
+    for NSG_NAME in ${NSG_NAMES}; do
+        echo "Removing NRMS rules 103 and 104 from NSG ${NSG_NAME}"
+        az network nsg rule delete --name "NRMS-Rule-103" --nsg-name ${NSG_NAME} --resource-group ${RESOURCE_GROUP} --output none
+        az network nsg rule delete --name "NRMS-Rule-104" --nsg-name ${NSG_NAME} --resource-group ${RESOURCE_GROUP} --output none
+    done
 
     # Remove public access of KeyVault
     KV_NAME=$(jq -r '.globalVars.value.keyVaultName' ${DEPLOYMENT_OUTPUT})
@@ -295,8 +296,8 @@ if [ ${RUN_SECURE} == true ]; then
     az storage account update --name ${BLOB_NAME} --allow-blob-public-access false --output none
 
     # Add AAD extension and enable autopatching of deployed VMs
-    VMs=$(az vm list --resource-group ${RESOURCE_GROUP} --query "[].name" -o tsv)
     echo "Updating VM config"
+    VMs=$(az vm list --resource-group ${RESOURCE_GROUP} --query "[].name" -o tsv)
     for VM in ${VMs}; do
         az vm extension set --resource-group ${RESOURCE_GROUP} --vm-name ${VM} --name AADSSHLoginForLinux --publisher Microsoft.Azure.ActiveDirectory
         az vm update --resource-group ${RESOURCE_GROUP} --name ${VM} --set osProfile.linuxConfiguration.patchSettings.patchMode=ImageDefault
