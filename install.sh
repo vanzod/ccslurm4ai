@@ -285,6 +285,14 @@ if [ ${RUN_SECURE} == true ]; then
         az network nsg rule delete --name "NRMS-Rule-104" --nsg-name ${NSG_NAME} --resource-group ${RESOURCE_GROUP} --output none
     done
 
+    # Associate NSG from CycleServer to all the subnets in the VNET
+    VNET_NAME=$(az network vnet list --resource-group jesse-test-cc-secure-0x08 --query "[].name" -o tsv)
+    SUBNET_NAMES=$(az network vnet subnet list --resource-group ${RESOURCE_GROUP} --vnet-name ${VNET_NAME} --query "[].name" -o tsv | grep -v AzureBastionSubnet)
+    CYCLESERVER_NSG_NAME='cycleserverNSG'
+    for SUBNET in ${SUBNET_NAMES}; do
+        az network vnet subnet update --resource-group ${RESOURCE_GROUP} --vnet-name ${VNET_NAME} --name ${SUBNET} --network-security-group ${CYCLESERVER_NSG_NAME}
+    done
+
     # Remove public access of KeyVault
     KV_NAME=$(jq -r '.globalVars.value.keyVaultName' ${DEPLOYMENT_OUTPUT})
     echo "Updating KeyVault"
@@ -298,6 +306,7 @@ if [ ${RUN_SECURE} == true ]; then
     # Add AAD extension and enable autopatching of deployed VMs
     echo "Updating VM config"
     VMs=$(az vm list --resource-group ${RESOURCE_GROUP} --query "[].name" -o tsv)
+    echo "${VMs}"
     for VM in ${VMs}; do
         az vm extension set --resource-group ${RESOURCE_GROUP} --vm-name ${VM} --name AADSSHLoginForLinux --publisher Microsoft.Azure.ActiveDirectory
         az vm update --resource-group ${RESOURCE_GROUP} --name ${VM} --set osProfile.linuxConfiguration.patchSettings.patchMode=ImageDefault
