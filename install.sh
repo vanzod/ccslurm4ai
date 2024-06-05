@@ -309,6 +309,8 @@ if [ ${RUN_SECURE} == true ]; then
     echo "${VMs}"
     for VM in ${VMs}; do
         az vm extension set --resource-group ${RESOURCE_GROUP} --vm-name ${VM} --name AADSSHLoginForLinux --publisher Microsoft.Azure.ActiveDirectory
+        az vm extension set --resource-group ${RESOURCE_GROUP} --vm-name ${VM} --name ConfigurationforLinux --publisher Microsoft.GuestConfiguration
+        az vm identity assign --resource-group ${RESOURCE_GROUP} --name ${VM}
         az vm update --resource-group ${RESOURCE_GROUP} --name ${VM} --set osProfile.linuxConfiguration.patchSettings.patchMode=ImageDefault
     done
 fi
