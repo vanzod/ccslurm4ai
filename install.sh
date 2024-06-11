@@ -163,6 +163,10 @@ if [ ${RUN_BICEP} == true ]; then
     jq --arg hpcSku "${HPC_SKU}" '.globalVars.value.hpcSku = $hpcSku' ${DEPLOYMENT_OUTPUT} > temp.json && mv temp.json ${DEPLOYMENT_OUTPUT}
     jq --arg hpcMaxCoreCount "${HPC_MAX_CORE_COUNT}" '.globalVars.value.hpcMaxCoreCount = $hpcMaxCoreCount' ${DEPLOYMENT_OUTPUT} > temp.json && mv temp.json ${DEPLOYMENT_OUTPUT}
     jq --arg hpcMaxNumVMs "${HPC_MAX_NUM_VMS}" '.globalVars.value.hpcMaxNumVMs = $hpcMaxNumVMs' ${DEPLOYMENT_OUTPUT} > temp.json && mv temp.json ${DEPLOYMENT_OUTPUT}
+
+    # Add fields removed from deployment output to be ingested by Ansible
+    jq --arg cycleserverAdminPubKey "$(cat cycleadmin_id_rsa.pub)" '.globalVars.value.cycleserverAdminPubKey = $cycleserverAdminPubKey' ${DEPLOYMENT_OUTPUT} > temp.json && mv temp.json ${DEPLOYMENT_OUTPUT}
+    jq --arg mySqlPwd "$(cat mysql_admin_pwd.txt)" '.globalVars.value.mySqlPwd = $mySqlPwd' ${DEPLOYMENT_OUTPUT} > temp.json && mv temp.json ${DEPLOYMENT_OUTPUT}
     rm -f ${ROLE_ASSIGNMENT_OUTPUT_FILE}
 fi
 

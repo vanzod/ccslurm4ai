@@ -1,4 +1,5 @@
 param region string
+@secure()
 param config object
 param kvName string
 param subnetId string
