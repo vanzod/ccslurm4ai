@@ -36,7 +36,7 @@ exclusive_node_rc=$?
 set_detached_mode 0
 NHC_RC=0
 if [ $exclusive_node_rc -eq 0 ]; then
-   echo "[$prolog_eplilog] execute nhc" >> /var/log/nhc.log
+   echo "[$prolog_epilog] execute nhc" >> /var/log/nhc.log
    sudo /usr/sbin/nhc
    NHC_RC=$?
 fi
