@@ -2,6 +2,7 @@ param region string
 @secure()
 param config object
 param subnetIds object
+param secureMode bool = false
 
 resource prometheusNSG 'Microsoft.Network/networkSecurityGroups@2023-09-01' = {
   name: 'prometheusNSG'
@@ -79,6 +80,18 @@ resource prometheus 'Microsoft.Compute/virtualMachines@2022-03-01' = {
         }
       }
     }
+  }
+}
+
+resource prometheusAADSSH 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = if(secureMode) {
+  parent: prometheus
+  name: 'aadssh'
+  location: region
+  properties: {
+    publisher: 'Microsoft.Azure.ActiveDirectory'
+    type: 'AADSSHLoginForLinux'
+    autoUpgradeMinorVersion: true
+    enableAutomaticUpgrade: true
   }
 }
 

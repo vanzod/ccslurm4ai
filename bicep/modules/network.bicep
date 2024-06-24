@@ -1,6 +1,14 @@
 param region string
 param config object
 
+resource bastionNSG 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
+  name: 'bastionNSG'
+  location: region
+  properties: {
+    securityRules: config.bastion_nsg_rules
+  }
+}
+
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   name: config.name
   location: region
@@ -15,6 +23,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
         properties: {
           addressPrefix: sub.ipRange
           delegations: sub.delegations
+          networkSecurityGroup: sub.name == 'AzureBastionSubnet' ? { id: bastionNSG.id }: null
         }
     }]
   }

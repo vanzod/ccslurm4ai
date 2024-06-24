@@ -195,6 +195,7 @@ resource lockerAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   properties: {
     accessTier: 'Hot'
     allowBlobPublicAccess: true
+    minimumTlsVersion: 'TLS1_2'
   }
 }
 
