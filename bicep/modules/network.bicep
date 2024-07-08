@@ -23,7 +23,9 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
         properties: {
           addressPrefix: sub.ipRange
           delegations: sub.delegations
-          networkSecurityGroup: sub.name == 'AzureBastionSubnet' ? { id: bastionNSG.id }: null
+          networkSecurityGroup: {
+            id: bastionNSG.id
+          }
         }
     }]
   }

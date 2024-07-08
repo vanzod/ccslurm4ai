@@ -286,7 +286,7 @@ if [ ${RUN_SECURE} == true ]; then
     done
 
     # Associate NSG from CycleServer to all the subnets in the VNET
-    VNET_NAME=$(az network vnet list --resource-group jesse-test-cc-secure-0x08 --query "[].name" -o tsv)
+    VNET_NAME=$(az network vnet list --resource-group ${RESOURCE_GROUP} --query "[].name" -o tsv)
     SUBNET_NAMES=$(az network vnet subnet list --resource-group ${RESOURCE_GROUP} --vnet-name ${VNET_NAME} --query "[].name" -o tsv | grep -v AzureBastionSubnet)
     CYCLESERVER_NSG_NAME='cycleserverNSG'
     for SUBNET in ${SUBNET_NAMES}; do
