@@ -1,0 +1,117 @@
+{
+    "securityRules": [
+        {
+            "name": "AllowHttpsInbound",
+            "properties": {
+                "access": "Allow",
+                "destinationAddressPrefix": "*",
+                "destinationPortRange": "443",
+                "direction": "Inbound",
+                "priority": 100,
+                "protocol": "TCP",
+                "sourceAddressPrefix": "Internet",
+                "sourcePortRange": "*"
+            }
+        },
+        {
+            "name": "AllowGatewayManagerInbound",
+            "properties": {
+                "access": "Allow",
+                "destinationAddressPrefix": "*",
+                "destinationPortRange": "443",
+                "direction": "Inbound",
+                "priority": 110,
+                "protocol": "TCP",
+                "sourceAddressPrefix": "GatewayManager",
+                "sourcePortRange": "*"
+            }
+        },
+        {
+            "name": "AllowAzureLoadBalancerInbound",
+            "properties": {
+                "access": "Allow",
+                "destinationAddressPrefix": "*",
+                "destinationPortRange": "443",
+                "direction": "Inbound",
+                "priority": 120,
+                "protocol": "TCP",
+                "sourceAddressPrefix": "AzureLoadBalancer",
+                "sourcePortRange": "*"
+            }
+        },
+        {
+            "name": "AllowBastionHostCommunication",
+            "properties": {
+                "access": "Allow",
+                "destinationAddressPrefix": "VirtualNetwork",
+                "destinationPortRanges": [
+                    "8080",
+                    "5701"
+                ],
+                "direction": "Inbound",
+                "priority": 130,
+                "protocol": "*",
+                "sourceAddressPrefix": "VirtualNetwork",
+                "sourcePortRange": "*"
+            }
+        },
+        {
+            "name": "AllowSshRDPOutbound",
+            "properties": {
+                "access": "Allow",
+                "destinationAddressPrefix": "VirtualNetwork",
+                "destinationPortRanges": [
+                    "22",
+                    "3389"
+                ],
+                "direction": "Outbound",
+                "priority": 100,
+                "protocol": "*",
+                "sourceAddressPrefix": "*",
+                "sourcePortRange": "*"
+            }
+        },
+        {
+            "name": "AllowAzureCloudOutbound",
+            "properties": {
+                "access": "Allow",
+                "destinationAddressPrefix": "AzureCloud",
+                "destinationPortRange": "443",
+                "direction": "Outbound",
+                "priority": 110,
+                "protocol": "TCP",
+                "sourceAddressPrefix": "*",
+                "sourcePortRange": "*"
+            }
+        },
+        {
+            "name": "AllowBastionCommunication",
+            "properties": {
+                "access": "Allow",
+                "destinationAddressPrefix": "VirtualNetwork",
+                "destinationPortRanges": [
+                    "8080",
+                    "5701"
+                ],
+                "direction": "Outbound",
+                "priority": 120,
+                "protocol": "*",
+                "sourceAddressPrefix": "VirtualNetwork",
+                "sourcePortRange": "*"
+            }
+        },
+        {
+            "name": "AllowHttpOutbound",
+            "properties": {
+                "access": "Allow",
+                "destinationAddressPrefix": "Internet",
+                "destinationPortRange": "80",
+                "direction": "Outbound",
+                "priority": 130,
+                "protocol": "TCP",
+                "sourceAddressPrefix": "*",
+                "sourcePortRange": "*"
+            }
+        }
+    ]
+}

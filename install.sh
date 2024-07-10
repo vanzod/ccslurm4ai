@@ -15,6 +15,7 @@ help()
     echo "Options:"
     echo "-a    Run only ansible configuration"
     echo "-b    Run only bastion deployment"
+    echo "-s    Run post-deployment routine for deployment to adhere to Microsoft security policies"
     echo "-h    Prints this help"
     echo
 }
@@ -42,14 +43,16 @@ create_bastion_scripts()
     done
 }
 
-# Run everything by default
+# Run Bicep and Ansible by default, but not the security post-deployment routine
 RUN_BICEP=true
 RUN_ANSIBLE=true
+RUN_SECURE=false
 
-while getopts ":abh" OPT; do
+while getopts ":absh" OPT; do
     case $OPT in
         a) RUN_BICEP=false;;
         b) RUN_ANSIBLE=false;;
+        s) RUN_SECURE=true;;
         h) help
            exit 0;;
         \?) help
@@ -127,6 +130,11 @@ if [ ${RUN_BICEP} == true ]; then
     yq -ej '.monitor_tags' ${CONFIG_FILE} > bicep/monitor_tags.json
     [ $? -ne 0 ] && echo '{}' > bicep/monitor_tags.json
     set -e  # Resume normal error handling
+
+    # If running in secure mode, add security tags to resource group tags
+    if [ ${RUN_SECURE} == true ]; then
+        jq '. += {"AzSecPackAutoConfigReady": "true"}' bicep/rg_tags.json > temp.json && mv temp.json bicep/rg_tags.json
+    fi
 
     # Start deployment
     az deployment sub create --template-file bicep/main.bicep \
@@ -262,4 +270,47 @@ if [ ${RUN_ANSIBLE} == true ]; then
         echo "Could not retreive all login VMs resource ID"
         exit 1
     fi
+fi
+
+# Apply security post-deployment routine if requested
+if [ ${RUN_SECURE} == true ]; then
+    echo "Applying post-deployment security configuration"
+
+    # Remove NRMS Rule 103 and Rule 104 which are applied by policy if they exist in the NSG
+    # These rules are automatically added to engineering accounts, but then violate some other security policies
+    NSG_NAMES=$(az network nsg list --resource-group ${RESOURCE_GROUP} --query "[].name" -o tsv)
+    for NSG_NAME in ${NSG_NAMES}; do
+        echo "Removing NRMS rules 103 and 104 from NSG ${NSG_NAME}"
+        az network nsg rule delete --name "NRMS-Rule-103" --nsg-name ${NSG_NAME} --resource-group ${RESOURCE_GROUP} --output none
+        az network nsg rule delete --name "NRMS-Rule-104" --nsg-name ${NSG_NAME} --resource-group ${RESOURCE_GROUP} --output none
+    done
+
+    # Associate NSG from CycleServer to all the subnets in the VNET
+    VNET_NAME=$(az network vnet list --resource-group ${RESOURCE_GROUP} --query "[].name" -o tsv)
+    SUBNET_NAMES=$(az network vnet subnet list --resource-group ${RESOURCE_GROUP} --vnet-name ${VNET_NAME} --query "[].name" -o tsv | grep -v AzureBastionSubnet)
+    CYCLESERVER_NSG_NAME='cycleserverNSG'
+    for SUBNET in ${SUBNET_NAMES}; do
+        az network vnet subnet update --resource-group ${RESOURCE_GROUP} --vnet-name ${VNET_NAME} --name ${SUBNET} --network-security-group ${CYCLESERVER_NSG_NAME}
+    done
+
+    # Remove public access of KeyVault
+    KV_NAME=$(jq -r '.globalVars.value.keyVaultName' ${DEPLOYMENT_OUTPUT})
+    echo "Updating KeyVault"
+    az keyvault update --name ${KV_NAME} --default-action Deny --bypass AzureServices --output none
+
+    # Remove public access of Blob
+    BLOB_NAME=$(jq -r '.globalVars.value.lockerAccountName' ${DEPLOYMENT_OUTPUT})
+    echo "Updating Blob access"
+    az storage account update --name ${BLOB_NAME} --allow-blob-public-access false --output none
+
+    # Add AAD extension and enable autopatching of deployed VMs
+    echo "Updating VM config"
+    VMs=$(az vm list --resource-group ${RESOURCE_GROUP} --query "[].name" -o tsv)
+    echo "${VMs}"
+    for VM in ${VMs}; do
+        az vm extension set --resource-group ${RESOURCE_GROUP} --vm-name ${VM} --name AADSSHLoginForLinux --publisher Microsoft.Azure.ActiveDirectory
+        az vm extension set --resource-group ${RESOURCE_GROUP} --vm-name ${VM} --name ConfigurationforLinux --publisher Microsoft.GuestConfiguration
+        az vm identity assign --resource-group ${RESOURCE_GROUP} --name ${VM}
+        az vm update --resource-group ${RESOURCE_GROUP} --name ${VM} --set osProfile.linuxConfiguration.patchSettings.patchMode=ImageDefault
+    done
 fi

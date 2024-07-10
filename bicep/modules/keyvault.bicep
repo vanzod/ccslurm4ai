@@ -30,6 +30,12 @@ resource kv 'Microsoft.KeyVault/vaults@2023-02-01' = {
     enabledForDiskEncryption: true
     softDeleteRetentionInDays: 7
     enableSoftDelete: true
+    enablePurgeProtection: true
+    publicNetworkAccess: 'Enabled'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Allow'
+    }
   }
 }
 

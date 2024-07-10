@@ -38,6 +38,7 @@ param vnetConfig = {
       delegations: []
     }
   ]
+  bastion_nsg_rules: loadJsonContent('./modules/bastion_nsg.json', 'securityRules')
 }
 
 param anfConfig = {
