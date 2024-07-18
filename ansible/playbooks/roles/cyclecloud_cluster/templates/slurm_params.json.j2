@@ -90,7 +90,7 @@
   "MaxHPCExecuteCoreCount" : "{{ hpcMaxCoreCount }}",
   "HPCMaxScalesetSize" : "{{ hpcMaxNumVMs }}",
   "HPCOverprovision" : false,
-  "HPCMemoryDampen" : {{ 8 if "A100_v4" in hpcSku else 0 }},
+  "HPCMemoryDampen" : {{ 2 if "A100_v4" in hpcSku else 0 }},
   "HPCClusterInitSpecs" : {
     "cc_slurm_pyxis_enroot:default:1.0.0" : {
       "Order" : 10000,
