@@ -1,13 +1,19 @@
 param region string
 param config object
 
-resource bastionNSG 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
-  name: 'bastionNSG'
+resource nsgs 'Microsoft.Network/networkSecurityGroups@2024-01-01' = [for nsg in config.nsgs: {
+  name: nsg.name
   location: region
   properties: {
-    securityRules: config.bastion_nsg_rules
+    securityRules: nsg.rules
   }
-}
+}]
+
+// Create a dictionary of NSG IDs for easy lookup
+var nsgsIds = [for i in range(0, length(config.nsgs)): {
+  name: nsgs[i].name
+  id: nsgs[i].id
+}]
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   name: config.name
@@ -24,7 +30,8 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
           addressPrefix: sub.ipRange
           delegations: sub.delegations
           networkSecurityGroup: {
-            id: bastionNSG.id
+            #disable-next-line use-resource-id-functions
+            id: filter(nsgsIds, nsg => nsg.name == sub.nsg)[0].id
           }
         }
     }]

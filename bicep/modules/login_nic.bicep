@@ -2,11 +2,6 @@ param region string
 param numberOfInstances int
 param subnetId string
 
-resource loginNSG 'Microsoft.Network/networkSecurityGroups@2019-11-01' = {
-  name: 'loginNSG'
-  location: region
-}
-
 resource loginPIP 'Microsoft.Network/publicIPAddresses@2019-11-01' = [ for i in range(1, numberOfInstances): {
   name: 'login${i}PIP'
   location: region
@@ -34,9 +29,6 @@ resource loginNIC 'Microsoft.Network/networkInterfaces@2019-11-01' = [ for i in 
         }
       }
     ]
-    networkSecurityGroup: {
-      id: loginNSG.id
-    }
   }
 }]
 

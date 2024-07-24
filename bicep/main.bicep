@@ -180,4 +180,3 @@ output ansible_inventory object = {
     }
   }
 }
-

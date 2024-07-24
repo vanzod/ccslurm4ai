@@ -4,11 +4,6 @@ param config object
 param subnetIds object
 param secureMode bool = false
 
-resource prometheusNSG 'Microsoft.Network/networkSecurityGroups@2023-09-01' = {
-  name: 'prometheusNSG'
-  location: region
-}
-
 resource prometheusNIC 'Microsoft.Network/networkInterfaces@2023-09-01' = {
   name: 'prometheusNIC'
   location: region
@@ -25,9 +20,6 @@ resource prometheusNIC 'Microsoft.Network/networkInterfaces@2023-09-01' = {
         }
       }
     ]
-    networkSecurityGroup: {
-      id: prometheusNSG.id
-    }
   }
 }
 

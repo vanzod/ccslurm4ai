@@ -8,54 +8,6 @@ var lockerSAName = substring('cclockersa${uniqueString(resourceGroup().id)}', 0,
 var ccServerName = 'cycleserver'
 var contributorID = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
 
-resource cycleserverNSG 'Microsoft.Network/networkSecurityGroups@2019-11-01' = {
-  name: 'cycleserverNSG'
-  location: region
-//  properties: {
-//    securityRules: [
-//      {
-//        name: 'SSH'
-//        properties: {
-//          priority: 1000
-//          protocol: 'Tcp'
-//          access: 'Allow'
-//          direction: 'Inbound'
-//          sourceAddressPrefixes: config.inboundAllowedIPs
-//          sourcePortRange: '*'
-//          destinationAddressPrefix: '*'
-//          destinationPortRange: '22'
-//        }
-//      }
-//      {
-//        name: 'HTTP'
-//        properties: {
-//          priority: 1001
-//          protocol: 'Tcp'
-//          access: 'Allow'
-//          direction: 'Inbound'
-//          sourceAddressPrefixes: config.inboundAllowedIPs
-//          sourcePortRange: '*'
-//          destinationAddressPrefix: '*'
-//          destinationPortRange: '80'
-//        }
-//      }
-//      {
-//        name: 'HTTPS'
-//        properties: {
-//          priority: 1002
-//          protocol: 'Tcp'
-//          access: 'Allow'
-//          direction: 'Inbound'
-//          sourceAddressPrefixes: config.inboundAllowedIPs
-//          sourcePortRange: '*'
-//          destinationAddressPrefix: '*'
-//          destinationPortRange: '443'
-//       }
-//      }
-//    ]
-//  }
-}
-
 resource cycleserverPIP 'Microsoft.Network/publicIPAddresses@2019-11-01' = {
   name: 'cycleserverPIP'
   location: region
@@ -83,9 +35,6 @@ resource cycleserverNIC 'Microsoft.Network/networkInterfaces@2019-11-01' = {
         }
       }
     ]
-    networkSecurityGroup: {
-      id: cycleserverNSG.id
-    }
   }
 }
 

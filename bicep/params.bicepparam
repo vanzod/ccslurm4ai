@@ -14,6 +14,7 @@ param vnetConfig = {
       name: 'compute'
       ipRange: '10.64.0.0/16'
       delegations: []
+      nsg: 'commonNSG'
     }
     {
       name: 'anf'
@@ -26,19 +27,31 @@ param vnetConfig = {
           }
         }
       ]
+      nsg: 'commonNSG'
     }
     {
       name: 'infra'
       ipRange: '10.67.4.0/22'
       delegations: []
+      nsg: 'commonNSG'
     }
     {
       name: 'AzureBastionSubnet'
       ipRange: '10.67.8.0/22'
       delegations: []
+      nsg: 'bastionNSG'
     }
   ]
-  bastion_nsg_rules: loadJsonContent('./modules/bastion_nsg.json', 'securityRules')
+  nsgs: [
+    {
+      name: 'commonNSG'
+      rules: loadJsonContent('./modules/common_nsg.json', 'securityRules')
+    }
+    {
+      name: 'bastionNSG'
+      rules: loadJsonContent('./modules/bastion_nsg.json', 'securityRules')
+    }
+  ]
 }
 
 param anfConfig = {
