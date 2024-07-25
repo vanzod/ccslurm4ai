@@ -124,7 +124,6 @@ module telemetryInfra 'modules/telemetry.bicep' = {
     monitor_tags: monitor_tags
   }
   dependsOn: [
-    resourceGroup
     clusterNetwork
   ]
 }
