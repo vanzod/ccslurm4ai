@@ -21,8 +21,10 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   tags: rg_tags
 }
 
+var unqStr = substring(uniqueString(resourceGroup.id, region),0,6)
+
 module clusterNetwork 'modules/network.bicep' = {
-  name: 'clusterNetwork'
+  name: 'clusterNetwork_${unqStr}'
   scope: resourceGroup
   params: {
     region: region
@@ -31,7 +33,7 @@ module clusterNetwork 'modules/network.bicep' = {
 }
 
 module KeyVault 'modules/keyvault.bicep' = {
-  name: 'KeyVault'
+  name: 'KeyVault_${unqStr}'
   scope: resourceGroup
   params: {
     region: region
@@ -40,7 +42,7 @@ module KeyVault 'modules/keyvault.bicep' = {
 }
 
 module CycleCloud 'modules/cyclecloud.bicep' = {
-  name: 'CycleCloud'
+  name: 'CycleCloud_${unqStr}'
   scope: resourceGroup
   params: {
     region: region
@@ -55,7 +57,7 @@ module CycleCloud 'modules/cyclecloud.bicep' = {
 }
 
 module ANF 'modules/anf.bicep' = {
-  name: 'ANF'
+  name: 'ANF_${unqStr}'
   scope: resourceGroup
   params: {
     region: region
@@ -69,7 +71,7 @@ module ANF 'modules/anf.bicep' = {
 }
 
 module bastion 'modules/bastion.bicep' = {
-  name: 'bastion'
+  name: 'bastion_${unqStr}'
   scope: resourceGroup
   params: {
     region: region
@@ -81,7 +83,7 @@ module bastion 'modules/bastion.bicep' = {
 }
 
 module loginNIC 'modules/login_nic.bicep' = {
-  name: 'loginNIC'
+  name: 'loginNIC_${unqStr}'
   scope: resourceGroup
   params: {
     region: region
@@ -94,7 +96,7 @@ module loginNIC 'modules/login_nic.bicep' = {
 }
 
 module MySql 'modules/mysql.bicep' = {
-  name: 'MySql'
+  name: 'MySql_${unqStr}'
   scope: resourceGroup
   params: {
     region: region
@@ -111,7 +113,7 @@ module MySql 'modules/mysql.bicep' = {
 }
 
 module telemetryInfra 'modules/telemetry.bicep' = {
-  name: 'telemetryInfra'
+  name: 'telemetryInfra_${unqStr}'
   params: {
     region: region
     rgName: rgName
@@ -128,7 +130,7 @@ module telemetryInfra 'modules/telemetry.bicep' = {
 }
 
 module moneoMetrics 'modules/moneo_metric_rules.bicep' = {
-  name: 'moneoMetrics'
+  name: 'moneoMetrics_${unqStr}'
   scope: resourceGroup
   params: {
     region: region
