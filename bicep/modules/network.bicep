@@ -33,6 +33,9 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
             #disable-next-line use-resource-id-functions
             id: filter(nsgsIds, nsg => nsg.name == sub.nsg)[0].id
           }
+          serviceEndpoints: contains(sub, 'serviceEndpoints') ? map(sub.serviceEndpoints, endpoint => {
+            service: endpoint
+          }) : []
         }
     }]
   }

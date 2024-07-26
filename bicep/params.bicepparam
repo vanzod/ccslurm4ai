@@ -15,6 +15,9 @@ param vnetConfig = {
       ipRange: '10.64.0.0/16'
       delegations: []
       nsg: 'commonNSG'
+      serviceEndpoints: [
+        'Microsoft.Storage'
+      ]
     }
     {
       name: 'anf'
@@ -34,6 +37,9 @@ param vnetConfig = {
       ipRange: '10.67.4.0/22'
       delegations: []
       nsg: 'commonNSG'
+      serviceEndpoints: [
+        'Microsoft.Storage'
+      ]
     }
     {
       name: 'AzureBastionSubnet'
