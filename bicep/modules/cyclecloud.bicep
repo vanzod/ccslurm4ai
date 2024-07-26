@@ -134,7 +134,7 @@ module subReadAssignment './subrole.bicep' = {
   }
 }
 
-resource lockerAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+resource lockerAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   name: lockerSAName
   location: region
   kind: 'StorageV2'
@@ -143,8 +143,22 @@ resource lockerAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   }
   properties: {
     accessTier: 'Hot'
-    allowBlobPublicAccess: true
     minimumTlsVersion: 'TLS1_2'
+    allowBlobPublicAccess: false
+    networkAcls: {
+      defaultAction: 'Deny'
+      virtualNetworkRules: [
+        {
+          action: 'Allow'
+          id: subnetIds.infra
+        }
+        {
+          action: 'Allow'
+          id: subnetIds.compute
+        }
+      ]
+      ipRules: []
+    }
   }
 }
 
