@@ -290,11 +290,6 @@ if [ ${RUN_SECURE} == true ]; then
     echo "Updating KeyVault"
     az keyvault update --name ${KV_NAME} --default-action Deny --bypass AzureServices --output none
 
-    # Remove public access of Blob
-    BLOB_NAME=$(jq -r '.globalVars.value.lockerAccountName' ${DEPLOYMENT_OUTPUT})
-    echo "Updating Blob access"
-    az storage account update --name ${BLOB_NAME} --allow-blob-public-access false --output none
-
     # Add AAD extension and enable autopatching of deployed VMs
     echo "Updating VM config"
     VMs=$(az vm list --resource-group ${RESOURCE_GROUP} --query "[].name" -o tsv)
