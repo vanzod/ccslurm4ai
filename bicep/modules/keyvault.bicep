@@ -1,5 +1,6 @@
 param region string
 param allowedUserObjID string
+param whitelist_ips array
 
 var kvName = substring('keyVault${uniqueString(resourceGroup().id)}', 0, 16)
 
@@ -31,10 +32,10 @@ resource kv 'Microsoft.KeyVault/vaults@2023-02-01' = {
     softDeleteRetentionInDays: 7
     enableSoftDelete: true
     enablePurgeProtection: true
-    publicNetworkAccess: 'Enabled'
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: 'Allow'
+      defaultAction: 'Deny'
+      ipRules: map(whitelist_ips, ipaddr => { value: ipaddr })
     }
   }
 }

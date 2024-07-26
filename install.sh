@@ -5,7 +5,6 @@ MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CONFIG_FILE="${MYDIR}/config.yaml"
 TEMPLATES_PATH="${MYDIR}/templates"
 
-
 help()
 {
     echo
@@ -122,6 +121,9 @@ if [ ${RUN_BICEP} == true ]; then
 
     # Required to grant access to key vault secrets
     export USER_OBJECTID=$(az ad signed-in-user show --query id --output tsv)
+
+    # Get local public IP to whitelist access to services (e.g. Key Vault)
+    export LOCAL_PUBLIC_IP=$(curl --silent ipinfo.io/ip)
 
     # Create JSON files for additional bicep variables
     set +e  # Ignore errors when the optional variables are not present
@@ -284,11 +286,6 @@ if [ ${RUN_SECURE} == true ]; then
         az network nsg rule delete --name "NRMS-Rule-103" --nsg-name ${NSG_NAME} --resource-group ${RESOURCE_GROUP} --output none
         az network nsg rule delete --name "NRMS-Rule-104" --nsg-name ${NSG_NAME} --resource-group ${RESOURCE_GROUP} --output none
     done
-
-    # Remove public access of KeyVault
-    KV_NAME=$(jq -r '.globalVars.value.keyVaultName' ${DEPLOYMENT_OUTPUT})
-    echo "Updating KeyVault"
-    az keyvault update --name ${KV_NAME} --default-action Deny --bypass AzureServices --output none
 
     # Add AAD extension and enable autopatching of deployed VMs
     echo "Updating VM config"

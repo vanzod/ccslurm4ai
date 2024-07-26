@@ -5,6 +5,7 @@ param rgName = readEnvironmentVariable('RESOURCE_GROUP', '')
 param deployingUserObjId = readEnvironmentVariable('USER_OBJECTID', '')
 param rg_tags = loadJsonContent('./rg_tags.json')
 param monitor_tags = loadJsonContent('./monitor_tags.json')
+param local_public_ip = readEnvironmentVariable('LOCAL_PUBLIC_IP', '')
 
 param vnetConfig = {
   name: 'clusterVnet'
@@ -39,6 +40,7 @@ param vnetConfig = {
       nsg: 'commonNSG'
       serviceEndpoints: [
         'Microsoft.Storage'
+        'Microsoft.KeyVault'
       ]
     }
     {

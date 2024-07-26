@@ -14,6 +14,7 @@ param roleDefinitionIds object
 param deployingUserObjId string
 param rg_tags object
 param monitor_tags object
+param local_public_ip string
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   name: rgName
@@ -38,6 +39,9 @@ module KeyVault 'modules/keyvault.bicep' = {
   params: {
     region: region
     allowedUserObjID: deployingUserObjId
+    whitelist_ips: [
+      local_public_ip
+    ]
   }
 }
 
