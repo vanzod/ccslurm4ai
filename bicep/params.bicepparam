@@ -68,8 +68,8 @@ param prometheusConfig = {
   vmImage: {
     publisher: 'almalinux'
     offer: 'almalinux-x86_64'
-    sku: '8_7-gen2'
-    version: '8.7.2023072701'
+    sku: '8-gen2'
+    version: '8.9.2023112501'
   }
   adminUsername: 'cycleadmin'
   sshPublicKey: loadTextContent('../cycleadmin_id_rsa.pub')
