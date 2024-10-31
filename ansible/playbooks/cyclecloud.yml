@@ -4,10 +4,10 @@
   become: false
 
   tasks:
-  - name: Update OS
-    include_role:
-      name: "update-{{ ansible_os_family | lower }}"
-
+#  - name: Update OS
+#    include_role:
+#      name: "update-{{ ansible_os_family | lower }}"
+#
   - name: Configure CycleCloud
     include_role:
       name: cyclecloud
