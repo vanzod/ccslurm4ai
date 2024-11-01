@@ -8,7 +8,7 @@
   "NodeNameIsHostname" : true,
   "NodeNamePrefix" : "Cluster Prefix",
   "ReturnProxy" : false,
-  "SchedulerMachineType" : "Standard_D8s_v4",
+  "SchedulerMachineType" : "Standard_D8ads_v5",
   "SchedulerImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2024102301",
   "SchedulerHostName" : "Cluster Prefix",
   "SchedulerClusterInitSpecs" : {},
@@ -17,10 +17,7 @@
   "configuration_slurm_version" : "23.11.7-1",
   "configuration_slurm_ha_enabled" : false,
   "configuration_slurm_shutdown_policy" : "Terminate",
-  "configuration_slurm_accounting_enabled" : true,
-  "configuration_slurm_accounting_url" : "{{mySqlFqdn}}",
-  "configuration_slurm_accounting_user" : "{{mySqlUser}}",
-  "configuration_slurm_accounting_password" : "{{mySqlPwd}}",
+  "configuration_slurm_accounting_enabled" : false,
   "additional_slurm_config" : "SuspendTime=-1",
   "SchedulerClusterInitSpecs" : {
     "cc_slurm_pyxis_enroot:default:1.0.0" : {
@@ -57,7 +54,7 @@
     }
   },
   "NumberLoginNodes" : 3,
-  "loginMachineType" : "Standard_D8s_v4",
+  "loginMachineType" : "Standard_D8ads_v5",
   "loginImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2024102301",
   "LoginClusterInitSpecs": {
     "cc_slurm_pyxis_enroot:default:1.0.0" : {
@@ -90,7 +87,11 @@
   "MaxHPCExecuteCoreCount" : "{{ hpcMaxCoreCount }}",
   "HPCMaxScalesetSize" : "{{ hpcMaxNumVMs }}",
   "HPCOverprovision" : false,
-  "HPCMemoryDampen" : {{ 2 if "A100_v4" in hpcSku else 0 }},
+  {% if "A100_v4" in hpcSku %}
+"HPCMemoryDampen" : 2,
+  {% elif "H100_v5" in hpcSku %}
+"HPCMemoryDampen" : 2,
+  {% endif %}
   "HPCClusterInitSpecs" : {
     "cc_slurm_pyxis_enroot:default:1.0.0" : {
       "Order" : 10000,
