@@ -17,7 +17,10 @@
   "configuration_slurm_version" : "23.11.7-1",
   "configuration_slurm_ha_enabled" : false,
   "configuration_slurm_shutdown_policy" : "Terminate",
-  "configuration_slurm_accounting_enabled" : false,
+  "configuration_slurm_accounting_enabled" : true,
+  "configuration_slurm_accounting_url" : "{{mySqlFqdn}}",
+  "configuration_slurm_accounting_user" : "{{mySqlUser}}",
+  "configuration_slurm_accounting_password" : "{{mySqlPwd}}",
   "additional_slurm_config" : "SuspendTime=-1",
   "SchedulerClusterInitSpecs" : {
     "cc_slurm_pyxis_enroot:default:1.0.0" : {
@@ -49,6 +52,22 @@
       "Spec" : "default",
       "Name" : "install_codecli:default:1.0.0",
       "Project" : "install_codecli",
+      "Locker" : "{{lockerName.stdout}}",
+      "Version" : "1.0.0"
+    },
+    "fix_cgroup:1.0.0" : {
+      "Order" : 10400,
+      "Spec" : "default",
+      "Name" : "fix_cgroup:default:1.0.0",
+      "Project" : "fix_cgroup",
+      "Locker" : "{{lockerName.stdout}}",
+      "Version" : "1.0.0"
+    },
+    "fix_ndv5_gres:default:1.0.0" : {
+      "Order" : 10500,
+      "Spec" : "default",
+      "Name" : "fix_ndv5_gres:default:1.0.0",
+      "Project" : "fix_ndv5_gres",
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
     }
