@@ -216,7 +216,7 @@ When the Slurm cluster is first started, all nodes are set in FUTURE state:
 To start one or more nodes, use the following command:
 
 ```bash
-sudo /opt/azurehpc/slurm/resume_program.sh slurmcluster-hpc-[1-2]
+sudo azslurm resume --node-list slurmcluster-hpc-[1-2]
 ```
 
 Note that the script accepts node names compliant to Slurm nomenclature.
@@ -224,7 +224,7 @@ Note that the script accepts node names compliant to Slurm nomenclature.
 Similarly, nodes can be terminated with:
 
 ```bash
-sudo /opt/azurehpc/slurm/suspend_program.sh slurmcluster-hpc-[1-2]
+sudo azslurm suspend --node-list slurmcluster-hpc-[1-2]
 ```
 
 To prevent affecting running jobs it is important to ensure that no jobs are running on nodes that are being terminated by draining nodes first.
