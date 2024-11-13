@@ -1,9 +1,9 @@
 #!/bin/bash
-#SBATCH -t 00:20:00
 #SBATCH --ntasks-per-node=8
 #SBATCH --cpus-per-task=12
 #SBATCH --gpus-per-node=8
 #SBATCH --exclusive
+#SBATCH -o nccl_allreduce_%j.log
 
 export LD_LIBRARY_PATH=/usr/local/nccl-rdma-sharp-plugins/lib:$LD_LIBRARY_PATH \
        OMPI_MCA_coll_hcoll_enable=0 \
