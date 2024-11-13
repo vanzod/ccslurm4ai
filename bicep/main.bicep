@@ -111,7 +111,7 @@ module MySql 'modules/mysql.bicep' = {
 }
 
 module telemetryInfra 'modules/telemetry.bicep' = {
-  name: 'telemetryInfra'
+  name: substring('telemetryinfra-${uniqueString(resourceGroup.id)}', 0, 25)
   params: {
     region: region
     rgName: rgName
