@@ -1,0 +1,31 @@
+#!/bin/bash
+#SBATCH -t 00:20:00
+#SBATCH --ntasks-per-node=8
+#SBATCH --cpus-per-task=12
+#SBATCH --gpus-per-node=8
+#SBATCH --exclusive
+
+export LD_LIBRARY_PATH=/usr/local/nccl-rdma-sharp-plugins/lib:$LD_LIBRARY_PATH \
+       OMPI_MCA_coll_hcoll_enable=0 \
+       NCCL_IB_PCI_RELAXED_ORDERING=1 \
+       CUDA_DEVICE_ORDER=PCI_BUS_ID \
+       NCCL_SOCKET_IFNAME=eth0 \
+       NCCL_TOPO_FILE=/opt/microsoft/ndv5-topo.xml \
+       NCCL_DEBUG=WARN \
+       NCCL_MIN_NCHANNELS=32
+
+
+CONT="nvcr.io#nvidia/pytorch:23.12-py3"
+PIN_MASK='ffffff000000,ffffff000000,ffffff,ffffff,ffffff000000000000000000,ffffff000000000000000000,ffffff000000000000,ffffff000000000000'
+MOUNT="/opt/microsoft:/opt/microsoft"
+
+srun --mpi=pmix \
+     --cpu-bind=mask_cpu:$PIN_MASK \
+     --container-image "${CONT}" \
+     --container-mounts "${MOUNT}" \
+     --ntasks-per-node=8 \
+     --cpus-per-task=12 \
+     --gpus-per-node=8 \
+     --mem=0 \
+     /usr/local/bin/all_reduce_perf_mpi -b 1K -e 16G -f 2 -g 1 -c 0
+
