@@ -33,8 +33,6 @@ function check_gpu_ecc() {
 
    collect_ecc_data
 
-   row_remap_pending_threshold=0
-   row_remap_error_threshold=0
    row_remap_uncorrectable_threshold=512
    uncorrectable_sram_threshold=4
 
@@ -48,12 +46,12 @@ function check_gpu_ecc() {
       gpu_query_out_line=( ${gpu_query_out_lines[$i]} ) 
       IFS=$' \t\n'
       dbg "GPU id $i: row remap pending, (${gpu_remapped_rows_query_out_line[0]})"
-      if [[ ${gpu_remapped_rows_query_out_line[0]} > ${row_remap_pending_threshold} ]]
+      if [[ ${gpu_remapped_rows_query_out_line[0]} != "No" ]]
       then
          die 1 "$FUNCNAME: GPU id $i: Row remap pending"
       fi
       dbg "GPU id $i: row remap error, (${gpu_remapped_rows_query_out_line[1]})"
-      if [[ ${gpu_remapped_rows_query_out_line[1]} > ${row_remap_error_threshold} ]]
+      if [[ ${gpu_remapped_rows_query_out_line[1]} != "No" ]]
       then
          die 1 "$FUNCNAME: GPU id $i: Row remap error"
       fi

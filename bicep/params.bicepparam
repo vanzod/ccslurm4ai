@@ -56,7 +56,7 @@ param anfConfig = {
 param cyclecloudConfig = {
   vmSize: 'Standard_D4s_v4'
   subnetName: 'infra'
-  imageVersion: '8.6.020240223'
+  imageVersion: '8.6.420240830'
   cycleAdminUsername: 'cycleadmin'
   sshPublicKey: loadTextContent('../cycleadmin_id_rsa.pub')
   sshPrivateKey: loadTextContent('../cycleadmin_id_rsa')
@@ -68,8 +68,8 @@ param prometheusConfig = {
   vmImage: {
     publisher: 'almalinux'
     offer: 'almalinux-x86_64'
-    sku: '8_7-gen2'
-    version: '8.7.2023072701'
+    sku: '8-gen2'
+    version: '8.9.2023112501'
   }
   adminUsername: 'cycleadmin'
   sshPublicKey: loadTextContent('../cycleadmin_id_rsa.pub')

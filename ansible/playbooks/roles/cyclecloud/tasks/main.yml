@@ -61,3 +61,11 @@
 - name: Fix azcopy permissions
   command: chmod 755 /usr/local/cyclecloud-cli/embedded/bin/azcopy
   become: true
+
+- name: Install additional required RPM packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - rsync
+  become: true

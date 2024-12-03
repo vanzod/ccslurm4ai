@@ -1,4 +1,4 @@
 #!/bin/bash
 set -euo pipefail
 
-/root/bin/azslurm scale
+/usr/bin/azslurm scale --no-restart

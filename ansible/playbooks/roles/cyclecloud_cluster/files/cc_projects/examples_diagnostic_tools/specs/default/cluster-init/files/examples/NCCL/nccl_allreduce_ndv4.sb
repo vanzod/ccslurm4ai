@@ -1,0 +1,26 @@
+#!/bin/bash
+#SBATCH --ntasks-per-node=8
+#SBATCH --cpus-per-task=12
+#SBATCH --gpus-per-node=8
+#SBATCH --mem=0
+#SBATCH -o nccl_allreduce_%j.log
+
+export OMPI_MCA_coll_hcoll_enable=0 \
+       NCCL_IB_PCI_RELAXED_ORDERING=1 \
+       CUDA_DEVICE_ORDER=PCI_BUS_ID \
+       NCCL_SOCKET_IFNAME=eth0 \
+       NCCL_TOPO_FILE=/opt/microsoft/ndv4-topo.xml
+
+source /etc/profile.d/modules.sh
+module load mpi/hpcx
+
+PIN_MASK='ffffff000000,ffffff000000,ffffff,ffffff,ffffff000000000000000000,ffffff000000000000000000,ffffff000000000000,ffffff000000000000'
+
+echo $SLURM_NODELIST
+echo
+
+srun --mpi=pmix \
+     --cpu-bind=mask_cpu:$PIN_MASK \
+     --gpus-per-node=8 \
+     --ntasks-per-node=8 \
+     /opt/nccl-tests/build/all_reduce_perf -b 8 -e 16G -f 2 -g 1 -c 0 -n 50

@@ -8,13 +8,13 @@
   "NodeNameIsHostname" : true,
   "NodeNamePrefix" : "Cluster Prefix",
   "ReturnProxy" : false,
-  "SchedulerMachineType" : "Standard_D8s_v4",
-  "SchedulerImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2023111801",
+  "SchedulerMachineType" : "Standard_D8ads_v5",
+  "SchedulerImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2024102301",
   "SchedulerHostName" : "Cluster Prefix",
   "SchedulerClusterInitSpecs" : {},
   "NFSSchedDisable" : false,
   "slurm" : null,
-  "configuration_slurm_version" : "23.02.7-1",
+  "configuration_slurm_version" : "23.11.7-1",
   "configuration_slurm_ha_enabled" : false,
   "configuration_slurm_shutdown_policy" : "Terminate",
   "configuration_slurm_accounting_enabled" : true,
@@ -31,40 +31,16 @@
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
     },
-    "install_pmix:default:1.0.0" : {
-      "Order" : 10100,
-      "Spec" : "default",
-      "Name" : "install_pmix:default:1.0.0",
-      "Project" : "install_pmix",
-      "Locker" : "{{lockerName.stdout}}",
-      "Version" : "1.0.0"
-    },
-    "fix_ndv5_gres:default:1.0.0" : {
-      "Order" : 10200,
-      "Spec" : "default",
-      "Name" : "fix_ndv5_gres:default:1.0.0",
-      "Project" : "fix_ndv5_gres",
-      "Locker" : "{{lockerName.stdout}}",
-      "Version" : "1.0.0"
-    },
     "cc_slurm_nhc:default:1.0.0" : {
-      "Order" : 10300,
+      "Order" : 10100,
       "Spec" : "default",
       "Name" : "cc_slurm_nhc:default:1.0.0",
       "Project" : "cc_slurm_nhc",
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
     },
-    "fix_accounting_storage_host:default:1.0.0" : {
-      "Order" : 10400,
-      "Spec" : "default",
-      "Name" : "fix_accounting_storage_host:default:1.0.0",
-      "Project" : "fix_accounting_storage_host",
-      "Locker" : "{{lockerName.stdout}}",
-      "Version" : "1.0.0"
-    },
     "prometheus_exporters:default:1.0.0" : {
-      "Order" : 10500,
+      "Order" : 10200,
       "Spec" : "default",
       "Name" : "prometheus_exporters:default:1.0.0",
       "Project" : "prometheus_exporters",
@@ -72,25 +48,41 @@
       "Version" : "1.0.0"
     },
     "install_codecli:default:1.0.0" : {
-      "Order" : 10600,
+      "Order" : 10300,
       "Spec" : "default",
       "Name" : "install_codecli:default:1.0.0",
       "Project" : "install_codecli",
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
     },
-    "fix_slurm_memory_dampen:default:1.0.0" : {
-      "Order" : 10700,
+    "fix_cgroup:1.0.0" : {
+      "Order" : 10400,
       "Spec" : "default",
-      "Name" : "fix_slurm_memory_dampen:default:1.0.0",
-      "Project" : "fix_slurm_memory_dampen",
+      "Name" : "fix_cgroup:default:1.0.0",
+      "Project" : "fix_cgroup",
+      "Locker" : "{{lockerName.stdout}}",
+      "Version" : "1.0.0"
+    },
+    "fix_ndv5_gres:default:1.0.0" : {
+      "Order" : 10500,
+      "Spec" : "default",
+      "Name" : "fix_ndv5_gres:default:1.0.0",
+      "Project" : "fix_ndv5_gres",
+      "Locker" : "{{lockerName.stdout}}",
+      "Version" : "1.0.0"
+    },
+    "examples_diagnostic_tools:1.0.0" : {
+      "Order" : 10600,
+      "Spec" : "default",
+      "Name" : "examples_diagnostic_tools:default:1.0.0",
+      "Project" : "examples_diagnostic_tools",
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
     }
   },
   "NumberLoginNodes" : 3,
-  "loginMachineType" : "Standard_D8s_v4",
-  "loginImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2023111801",
+  "loginMachineType" : "Standard_D8ads_v5",
+  "loginImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2024102301",
   "LoginClusterInitSpecs": {
     "cc_slurm_pyxis_enroot:default:1.0.0" : {
       "Order" : 10000,
@@ -117,12 +109,16 @@
       "Version" : "1.0.0"
     }
   },
-  "HPCImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2023111801",
+  "HPCImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2024102301",
   "HPCMachineType" : "{{ hpcSku }}",
   "MaxHPCExecuteCoreCount" : "{{ hpcMaxCoreCount }}",
   "HPCMaxScalesetSize" : "{{ hpcMaxNumVMs }}",
   "HPCOverprovision" : false,
-  "HPCMemoryDampen" : {{ 8 if "A100_v4" in hpcSku else 0 }},
+  {% if "A100_v4" in hpcSku %}
+"HPCMemoryDampen" : 2,
+  {% elif "H100_v5" in hpcSku %}
+"HPCMemoryDampen" : 2,
+  {% endif %}
   "HPCClusterInitSpecs" : {
     "cc_slurm_pyxis_enroot:default:1.0.0" : {
       "Order" : 10000,
@@ -140,16 +136,8 @@
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
     },
-    "install_pmix:default:1.0.0" : {
-      "Order" : 10200,
-      "Spec" : "default",
-      "Name" : "install_pmix:default:1.0.0",
-      "Project" : "install_pmix",
-      "Locker" : "{{lockerName.stdout}}",
-      "Version" : "1.0.0"
-    },
     "cc_slurm_nhc:default:1.0.0" : {
-      "Order" : 10300,
+      "Order" : 10200,
       "Spec" : "default",
       "Name" : "cc_slurm_nhc:default:1.0.0",
       "Project" : "cc_slurm_nhc",
@@ -157,7 +145,7 @@
       "Version" : "1.0.0"
     },
     "prometheus_exporters:default:1.0.0" : {
-      "Order" : 10400,
+      "Order" : 10300,
       "Spec" : "default",
       "Name" : "prometheus_exporters:default:1.0.0",
       "Project" : "prometheus_exporters",
@@ -165,7 +153,7 @@
       "Version" : "1.0.0"
     }
   },
-  "HTCImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2023111801",
+  "HTCImageName" : "microsoft-dsvm:ubuntu-hpc:2204:22.04.2024102301",
   "HTCMachineType" : "Standard_F2s_v2",
   "MaxHTCExecuteCoreCount" : 20,
   "HTCUseLowPrio" : false,
@@ -178,14 +166,6 @@
       "Spec" : "default",
       "Name" : "cc_slurm_pyxis_enroot:default:1.0.0",
       "Project" : "cc_slurm_pyxis_enroot",
-      "Locker" : "{{lockerName.stdout}}",
-      "Version" : "1.0.0"
-    },
-    "install_pmix:default:1.0.0" : {
-      "Order" : 10100,
-      "Spec" : "default",
-      "Name" : "install_pmix:default:1.0.0",
-      "Project" : "install_pmix",
       "Locker" : "{{lockerName.stdout}}",
       "Version" : "1.0.0"
     }
